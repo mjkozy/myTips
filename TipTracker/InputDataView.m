@@ -23,6 +23,7 @@
 @property (strong, nonatomic) NSMutableArray *allData;
 @property (strong, nonatomic) NSArray *userData;
 @property (strong, nonatomic) NSArray *employerData;
+@property (strong, nonatomic) NSArray *entryData;
 @property (strong, nonatomic) NSManagedObjectContext *moc;
 
 
@@ -38,24 +39,20 @@
 
     self.totalTipsTextField.delegate = self;
     self.totalSalesTextField.delegate = self;
+    
     [self textFieldBorders];
-
+    [self queryParse];
 
 
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    [self retrieveEmployerName];
-    PFUser *user = [PFUser currentUser];
-    if (user == nil) {
-        [self performSegueWithIdentifier:@"logInSegue" sender:self];
-    }
+    [self queryParse];
 }
 
 - (IBAction)cancelButtonTapped:(id)sender {
-    [self dismissModalView];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)saveButtonTapped:(id)sender {
@@ -67,8 +64,21 @@
             [error addAction:okay];
             [self presentViewController:error animated:YES completion:nil];
     }else {
-            [self saveAndDismissModalView];
+            [self saveData];
         }
+}
+
+- (void)queryParse {
+
+    PFUser *currentUser = [PFUser currentUser];
+    PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
+    [query whereKey:@"userId" equalTo:currentUser.objectId];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        if (!error) {
+            self.employerData = objects;
+            NSLog(@"%@", self.employerData);
+        }
+    }];
 }
 
 #pragma mark - Helper Methods
@@ -88,32 +98,18 @@
     self.notesTextField.font = [UIFont fontWithName:@"Helvetica Neue" size:15];
 
     self.tableView.sectionHeaderHeight = 20;
+
+    [self.navigationController setHidesBottomBarWhenPushed:YES];
+    [self.navigationController.navigationBar setHidden:NO];
 }
 
 - (void)dismissModalView {
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void)saveAndDismissModalView {
     [self saveData];
     [self dismissModalView];
-}
-
-- (void)retrieveEmployerName {
-    PFUser *user = [PFUser currentUser];
-    if (user) {
-        PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-        [query whereKey:@"employee" equalTo:user];
-        [query orderByAscending:@"date"];
-
-        [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-            if (!error) {
-                self.userData = objects;
-                PFObject *object = [PFObject objectWithClassName:@"Employer"];
-                self.employerLabel.text = [object objectForKey:@"employerName"];
-            }
-        }];
-    }
 }
 
 - (void)closeAndSave {
@@ -123,7 +119,7 @@
         [error addAction:okay];
         [self presentViewController:error animated:YES completion:nil];
     }else {
-        [self saveAndDismissModalView];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
 
@@ -142,45 +138,30 @@
     NSString *tipsString = [NSString stringWithFormat:@"$%.2f", tipsEarned];
     NSString *salesString = [NSString stringWithFormat:@"$%.2f", dailyRing];
 
-//    NSNumber *totalTips = [NSNumber numberWithFloat:tipsEarned];
-//    NSNumber *totalSales = [NSNumber numberWithFloat:dailyRing];
-//
-//    NSManagedObjectContext *context = self.moc;
-//    Entry *entryObject = [NSEntityDescription insertNewObjectForEntityForName:@"Entry" inManagedObjectContext:context];
-//    User *userObject = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:context];
-//    Employer *employerObject = [NSEntityDescription insertNewObjectForEntityForName:@"Employer" inManagedObjectContext:context];
-//
-//      NSString *empName = self.employerLabel.text;
+    NSIndexPath *indexPath = [self.inputTableView indexPathForSelectedRow];
+    PFObject *employerObject = [self.employerData objectAtIndex:indexPath.row];
+    PFObject *newEntry = [PFObject objectWithClassName:@"Entries"];
 
-    PFObject *object = [PFObject objectWithClassName:@"Employer"];
-    [object setObject:tipsString forKey:@"totalTips"];
-    [object setObject:salesString forKey:@"totalSales"];
-    [object setObject:stringFromDate forKey:@"date"];
-    [object setObject:percentEarned forKey:@"percentEarned"];
-    [object setObject:[PFUser currentUser] forKey:@"employee"];
-    [object setObject:notes forKey:@"notes"];
+    PFUser *currentUser = [PFUser currentUser];
+    [newEntry setObject:tipsString forKey:@"totalTips"];
+    [newEntry setObject:salesString forKey:@"totalSales"];
+    [newEntry setObject:stringFromDate forKey:@"date"];
+    [newEntry setObject:percentEarned forKey:@"percentEarned"];
+    [newEntry setObject:notes forKey:@"notes"];
+    [newEntry setObject:employerObject.objectId forKey:@"companyId"];
+    [newEntry setObject:currentUser.objectId forKey:@"createdBy"];
 
-    [object saveInBackgroundWithBlock:nil];
+    [newEntry saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if (error) {
+            NSLog( @"%@ %@", error, [error userInfo]);
+        }
+    }];
 
-//    entryObject.notes = notes;
-//    entryObject.totalSales = totalSales;
-//    entryObject.totalTips = totalTips;
-//    entryObject.date = stringFromDate;
-//    entryObject.percentEarned = percentEarned;
-//
-//    if (userObject.employers.employerName == nil) {
-//    employerObject.employerName = empName;
-//        userObject.employers = employerObject;
-//    }
-//    if (employerObject.employee.firstname == nil) {
-//    employerObject.employee.firstname = [[NSUserDefaults standardUserDefaults] valueForKey:@"firstname"];
-//    }
-//
-//    NSError *error;
-//    if(![context save:&error]) {
-//        NSLog(@"Unresolved error: %@, %@", error, [error userInfo]);
-//   
-//    };
+    Entry *tips = [NSEntityDescription insertNewObjectForEntityForName:@"Entry" inManagedObjectContext:self.moc];
+    tips.totalTips = [NSNumber numberWithFloat:tipsEarned];
+    [self.moc save:nil];
+
+    NSLog(@"%@ is currently employed by %@",[NSString stringWithFormat:@"%@",[employerObject valueForKey:@"userId"]], employerObject[@"companyName"]);
 
     [self performSegueWithIdentifier:@"unwindToMain" sender:self];
 }
@@ -232,7 +213,7 @@
     if ([segue.identifier isEqualToString:@"unwindToMain"]) {
         TipsTableViewController *tvc;
         tvc = segue.destinationViewController;
-//        [main.mainTableView reloadData];
+//        [main.tipsTableView reloadData];
     }
 }
 

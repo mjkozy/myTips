@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <Parse/Parse.h>
 #import "User.h"
 
 @class User;
@@ -23,6 +23,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *percentageLabel;
 @property (weak, nonatomic) IBOutlet UILabel *notesLabel;
 @property User *employee;
-@property Entry *entries;
+@property PFObject *entries;
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "DetailsTableViewController.h"
-#import <Parse/Parse.h>
+
 
 
 
@@ -26,14 +26,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.employerLabel.text = _entries.employers.employerName;
-    self.dateLabel.text = _entries.createdAt;
-    self.totalTipsLabel.text = [NSString stringWithFormat:@"$%.2f", [_entries.totalTips floatValue]];
-    self.totalSalesLabel.text = [NSString stringWithFormat:@"$%.2f",[_entries.totalSales floatValue] ];
-    self.percentageLabel.text = _entries.percentEarned;
+    self.employerLabel.text = [self.entries objectForKey:@"employerName"];
+    self.dateLabel.text = [self.entries objectForKey:@"date"];
+    self.totalTipsLabel.text = [NSString stringWithFormat:@"%@",[self.entries objectForKey:@"totalTips"]];
+    self.totalSalesLabel.text = [NSString stringWithFormat:@"%@",[self.entries valueForKey:@"totalSales"]];
+    self.percentageLabel.text = [self.entries objectForKey:@"percentEarned"];
 
-    self.navigationItem.title = @"Details";
-    self.notesLabel.text = _entries.notes;
+    self.navigationItem.title = @"myDetails";
+    self.notesLabel.text = [self.entries valueForKey:@"notes"];
+
+    [self.tabBarController.tabBar setHidden:NO];
 
     if ([self.percentageLabel.text floatValue] >= 0.20) {
         self.detailView.backgroundColor = [UIColor greenColor];

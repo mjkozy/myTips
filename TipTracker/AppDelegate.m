@@ -19,19 +19,24 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+
+    [NSThread sleepForTimeInterval:1.5];
     // Initialize Parse.
-//    [Parse setApplicationId:@"aiDaa7Cuty04tKw6rqPniIKRnPl1Jc2lNRqLeDId"
-//                  clientKey:@"w0rs1P1wFRPA1iqlIEbLRsWOGvhTExjLgkixdHW1"];
+    [Parse setApplicationId:@"9g3ypl3nSWlk30wotY1eXAZDxPvwlIIN5SpP2cpG"
+                  clientKey:@"dmVwnqS4puw15zWPrFmE46SKmS4jQxMmXAHiONtN"];
 
-    ParseClientConfiguration *config = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
+//    ParseClientConfiguration *config = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
+//
+//        configuration.clientKey = @"dmVwnqS4puw15zWPrFmE46SKmS4jQxMmXAHiONtN";
+//        configuration.applicationId = @"9g3ypl3nSWlk30wotY1eXAZDxPvwlIIN5SpP2cpG";
+//        configuration.server = @"https://mytip.herokuapp.com/parse";
+//    }];
+//    [Parse initializeWithConfiguration:config];
 
-        configuration.clientKey = @"w0rs1P1wFRPA1iqlIEbLRsWOGvhTExjLgkixdHW1";
-        configuration.applicationId = @"aiDaa7Cuty04tKw6rqPniIKRnPl1Jc2lNRqLeDId";
-        configuration.server = @"http://mytip.herokuapp.com/parse";
-    }];
-    [Parse initializeWithConfiguration:config];
-
-
+//    PFObject *object = [PFObject objectWithClassName:@"Foo"];
+//    object[@"foo"]= @"bar";
+//    [object save];
+//    NSLog(@"%@", object);
 //    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
 //    UINavigationController *navController = tabBarController.viewControllers[0];
 //    EmployerTableView *evc = (EmployerTableView *)navController.topViewController;

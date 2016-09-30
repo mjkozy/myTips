@@ -11,21 +11,20 @@
 #import "InputDataView.h"
 #import "EmployerTableView.h"
 #import "AppDelegate.h"
-#import "KeychainWrapper.h"
 #import "LogInViewController.h"
 #import "SignUpViewController.h"
 
-
 @interface EmployerTableView ()<UITableViewDataSource,UITableViewDelegate>
+@property (strong, nonatomic) NSMutableArray *employerName;
+
 
 @property (weak, nonatomic) IBOutlet UITableView *employerTableView;
-@property (strong, nonatomic) NSMutableArray *employerObjects;
-@property (strong, nonatomic) NSArray *employerInfo;
+
 
 @end
 
 @implementation EmployerTableView
-
+@dynamic refreshControl;
 
 
 - (void)viewDidLoad {
@@ -33,101 +32,99 @@
     AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
     self.moc = appDelegate.managedObjectContext;
 
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(retrieveEmployerName) forControlEvents:UIControlEventValueChanged];
 
-    [self isCurrentlyEmployed];
-
-    UIImage *image = [UIImage imageNamed:@"appbackground.png"];
+    UIImage *image = [UIImage imageNamed:@"splashPage.png"];
     UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:image];
     self.employerTableView.backgroundView = backgroundImage;
     self.navigationItem.title = @"MyTips";
+
     [self.addEmployer setEnabled:NO];
+    [self.navigationController.navigationBar setHidden:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    [self retrieveEmployerName];
-    PFUser *user = [PFUser currentUser];
-    if (user == nil) {
+
+    PFUser *currentUser = [PFUser currentUser];
+    if (currentUser == nil) {
         [self performSegueWithIdentifier:@"logInSegue" sender:self];
     }
+    [self.navigationController.navigationBar setHidden:NO];
+      [self.addEmployer setEnabled:NO];
+    [self retrieveEmployerName];
+}
+
+- (void)deleteCoreData {
+    NSFetchRequest *request = [NSFetchRequest new];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:self.moc];
+    [request setEntity:entity];
+    NSSortDescriptor *tipDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"totalTips" ascending:NO];
+    request.sortDescriptors = @[tipDescriptor];
+    NSArray *deleteCD = [self.moc executeFetchRequest:request error:nil];
+    for (Entry *deleteAll in deleteCD) {
+        [self.moc deleteObject:deleteAll];
+        NSLog(@"Deleted: %@", deleteAll);
+        [self.employerTableView reloadData];
+    }
+
 }
 
 - (void)retrieveEmployerName {
     PFUser *user = [PFUser currentUser];
-    if (user) {
-        PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-        [query whereKeyExists:@"totalTips"];
-        [query whereKey:@"employee" equalTo:user];
-        [query orderByAscending:@"date"];
-
-        [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-            if (!error) {
-                self.employerObjects = [[NSMutableArray alloc] initWithArray:objects];
-                [self.employerTableView reloadData];
-            }
+    PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
+    if (user.objectId == nil) {
+        [self performSegueWithIdentifier:@"logInSegue" sender:self];
+    }else {
+    [query whereKey:@"userId" equalTo:user.objectId];
+        [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable objects, NSError * _Nullable error) {
+        if (!error) {
+            self.employerName = [NSMutableArray arrayWithObject:objects];
+            [self.employerTableView reloadData];
+        }else  {
+            [self performSegueWithIdentifier:@"logInSegue" sender:self];
+        }
+            [self.refreshControl isRefreshing];
+            [self.refreshControl endRefreshing];
         }];
     }
 }
 
-- (void)isCurrentlyEmployed {
-    PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"Error %@, %@", error, [error userInfo]);
-        }else {
-            self.employerInfo = objects;
-            NSLog(@"%@", objects);
-        }
-    }];
-}
-
 - (IBAction)logoutTapped:(id)sender {
-
     [PFUser logOut];
     [self performSegueWithIdentifier:@"logInSegue" sender:self];
 }
 
-- (IBAction)addEmployerTapped:(id)sender {
+- (IBAction)addEmployerTapped:(UIBarButtonItem *)sender {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"New Employer" message:nil preferredStyle:UIAlertControllerStyleAlert];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = @"Employer";
     }];
     UIAlertAction *addAction = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 
-        UITextField *employerName = [[alertController textFields]lastObject];
+        UITextField *employerName = [[alertController textFields] firstObject];
         NSString *enteredEmployer = employerName.text;
 
-        PFObject *object = [PFObject objectWithClassName:@"Employer"];
-        [object setObject:enteredEmployer forKey:@"employerName"];
+        PFObject *employerObject = [PFObject objectWithClassName:@"Employer"];
 
-        [object saveInBackgroundWithBlock:nil];
+        PFUser *user = [PFUser currentUser];
+        [employerObject setObject:enteredEmployer forKey:@"companyName"];
+        [user setObject:employerObject[@"companyName"] forKey:@"currentEmployer"];
+        [employerObject setObject:user forKey:@"userId"];
 
-
+        [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"Cannot save at this time");
+            }
+        }];
     }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:addAction];
     [alertController addAction:cancelAction];
     [self presentViewController:alertController animated:YES completion:nil];
 }
-
-//- (void)loadEmployer {
-//    NSManagedObjectContext *context = self.moc;
-//    NSFetchRequest *request = [NSFetchRequest new];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:NSStringFromClass([Employer class]) inManagedObjectContext:context];
-//    [request setEntity:entity];
-//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"employerName" ascending:YES]];
-//    NSArray *array = [context executeFetchRequest:request error:nil];
-//    self.employerObjects = [NSMutableArray arrayWithArray:array];
-//    if (!self.employerObjects.count) {
-//        [self.addEmployer setEnabled:YES];
-//    }
-//        [self.addEmployer setEnabled:NO];
-//
-//     [self.employerTableView reloadData];
-//}
-//
-
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 
@@ -137,15 +134,30 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    return self.employerObjects.count;
+    return self.employerName.count;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *headerView = [UIView new];
+    headerView.backgroundColor = [UIColor clearColor];
+    UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 0, 600, 25)];
+    headerLabel.backgroundColor = [UIColor blackColor];
+    headerLabel.shadowColor = [UIColor blackColor];
+    headerLabel.textColor = [UIColor whiteColor];
+    headerLabel.font = [UIFont fontWithName:@"Iowan Old Style Roman" size:20];
+    headerLabel.text = @"Current Employer";
+    [headerView addSubview:headerLabel];
+    return headerView;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"employerCell"];
 
-    PFObject *employer = [self.employerObjects objectAtIndex:indexPath.row];
+    PFUser *currentUser = [PFUser currentUser];
+//    PFObject *empObject = [self.employerName objectAtIndex:indexPath.row];
     cell.textLabel.font = [UIFont fontWithName:@"Iowan Old Style Roman" size:14];
-    cell.textLabel.text = [employer objectForKey:@"employerName"];
+    cell.textLabel.textColor = [UIColor whiteColor];
+    cell.textLabel.text = [currentUser objectForKey:@"currentEmployer"];
 
     return cell;
 }
@@ -153,14 +165,20 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 
-//    NSManagedObjectContext *context = self.moc;
-
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        //Delete
-        PFObject *deleteObject = [self.employerObjects objectAtIndex:indexPath.section];
-        [deleteObject deleteInBackgroundWithBlock:nil];
-        [deleteObject saveInBackgroundWithBlock:nil];
+        [self.employerName removeObjectAtIndex:indexPath.section];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
+    PFQuery *query = [PFQuery queryWithClassName:@"Entries"];
+    PFUser *user = [PFUser currentUser];
+    [query whereKey:@"userId" equalTo:user];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        if (!error) {
+            [PFObject deleteAllInBackground:objects];
+            [self.employerTableView reloadData];
+        }
+    }];
+    [self deleteCoreData];
     [self.addEmployer setEnabled:YES];
 }
 
@@ -168,15 +186,11 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"tipsSegue"]) {
-    UINavigationController *nav = segue.destinationViewController;
-    TipsTableViewController *tvc;
-    tvc = (TipsTableViewController *)nav.topViewController;
-    NSIndexPath *indexPath = [self.employerTableView indexPathForCell:sender];
-    tvc.employer = self.employerObjects[indexPath.row];
+        TipsTableViewController *tipsVC = segue.destinationViewController;
+        [tipsVC.tipsTableView reloadData];
     }
     if ([segue.identifier isEqualToString:@"logInSegue"]) {
-        LogInViewController *lvc;
-        lvc = segue.destinationViewController;
+        [segue.destinationViewController setHidesBottomBarWhenPushed:YES];
     }
 }
 
@@ -187,7 +201,7 @@
     }
     if ([segue.identifier isEqualToString:@"logInSegue"]) {
         LogInViewController *logIn;
-        logIn = segue.sourceViewController;
+        logIn = (LogInViewController *)segue.sourceViewController;
     }
  }
 

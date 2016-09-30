@@ -9,7 +9,7 @@
 
 #import <UIKit/UIKit.h>
 #import "DescriptionCell.h"
-#import "Employer.h"
+#import "Entry.h"
 #import <Parse/Parse.h>
 
 
@@ -18,8 +18,9 @@
 
 @interface TipsTableViewController : UITableViewController
 
-@property Employer *employer;
-@property (weak, nonatomic) IBOutlet UITableView *mainTableView;
+@property Entry *entry;
+@property (weak, nonatomic) IBOutlet UITableView *tipsTableView;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
 
 @end

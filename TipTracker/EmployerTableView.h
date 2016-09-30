@@ -9,12 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "User.h"
 #import <CoreData/CoreData.h>
+#import <Parse/Parse.h>
 
 
-@interface EmployerTableView : UIViewController
+@interface EmployerTableView : UITableViewController
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *logoutButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *addEmployer;
 @property (strong, nonatomic) NSManagedObjectContext *moc;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
+@property (strong, nonatomic) PFRelation *employerRelation;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *addEmployer;
+
 
 
 @end

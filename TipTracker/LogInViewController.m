@@ -38,10 +38,15 @@
     self.moc = appDelegate.managedObjectContext;
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(loadEmployeeData) forControlEvents:UIControlEventValueChanged];
+    [self.navigationController.navigationBar setHidden:YES];
 
     self.passwordTextField.delegate = self;
     [self.passwordTextField becomeFirstResponder];
     [self customButtons];
+    PFUser *user = [PFUser currentUser];
+    if (user) {
+        [self.signUpButton setEnabled:NO];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -70,16 +75,16 @@
                                                 UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Whoops" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
                                                 }];
                                                 [alert addAction:cancel];
-                                            } else {
+                                                [self presentViewController:alert animated:YES completion:nil];
+                                            }else {
                                                 PFUser *currentUser = [PFUser currentUser];
                                                 if ([currentUser.objectId isKindOfClass:[@"Employer" class]]) {
-                                                    [self.navigationController popViewControllerAnimated:YES];
-                                                }else {
-                                                    [self.navigationController popViewControllerAnimated:YES];
+                                                    [self.navigationController popViewControllerAnimated:NO];
                                                 }
+                                                [self.navigationController popToRootViewControllerAnimated:YES];
                                             }
-                                        }];
-        [self.navigationController popViewControllerAnimated:NO];
+                                    }];
+
     }
 }
 

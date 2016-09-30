@@ -42,7 +42,6 @@
 		A3A4E7D01C5F15CC00828F20 /* TipTrackerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A4E7CF1C5F15CC00828F20 /* TipTrackerUITests.m */; };
 		A3A561BC1CE4C842004EF9F2 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3A561BB1CE4C841004EF9F2 /* LocalAuthentication.framework */; };
 		A3AC09B51D3D7AB200099293 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3AC09B41D3D7AB200099293 /* CoreFoundation.framework */; };
-		A3AC09BB1D3D7CA900099293 /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A3AC09BA1D3D7CA900099293 /* KeychainWrapper.m */; };
 		A3B648311D64B4A2004AD5AF /* Employer+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6482E1D64B4A2004AD5AF /* Employer+CoreDataProperties.m */; };
 		A3B648321D64B4A2004AD5AF /* Employer.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B648301D64B4A2004AD5AF /* Employer.m */; };
 		A3BD8AE61C8617E1000A8430 /* InputDataView.m in Sources */ = {isa = PBXBuildFile; fileRef = A3BD8AE51C8617E1000A8430 /* InputDataView.m */; };
@@ -139,8 +138,6 @@
 		A3A4E7D11C5F15CC00828F20 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A3A561BB1CE4C841004EF9F2 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		A3AC09B41D3D7AB200099293 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		A3AC09B91D3D7CA900099293 /* KeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainWrapper.h; sourceTree = "<group>"; };
-		A3AC09BA1D3D7CA900099293 /* KeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainWrapper.m; sourceTree = "<group>"; };
 		A3B6482D1D64B4A2004AD5AF /* Employer+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Employer+CoreDataProperties.h"; sourceTree = "<group>"; };
 		A3B6482E1D64B4A2004AD5AF /* Employer+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Employer+CoreDataProperties.m"; sourceTree = "<group>"; };
 		A3B6482F1D64B4A2004AD5AF /* Employer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Employer.h; sourceTree = "<group>"; };
@@ -276,8 +273,6 @@
 				A3F6635F1D5BC9F000F7E25D /* Entry+CoreDataProperties.m */,
 				A3F663601D5BC9F000F7E25D /* Entry.h */,
 				A3F663611D5BC9F000F7E25D /* Entry.m */,
-				A3AC09B91D3D7CA900099293 /* KeychainWrapper.h */,
-				A3AC09BA1D3D7CA900099293 /* KeychainWrapper.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -566,7 +561,6 @@
 				A3F663661D5BC9F000F7E25D /* Entry+CoreDataProperties.m in Sources */,
 				A3C079771CACBBB1007C4BB3 /* SignUpViewController.m in Sources */,
 				A3FBA0471CCADFE9002DAA40 /* EmployerTableView.m in Sources */,
-				A3AC09BB1D3D7CA900099293 /* KeychainWrapper.m in Sources */,
 				A3B648311D64B4A2004AD5AF /* Employer+CoreDataProperties.m in Sources */,
 				A3A4E7AC1C5F15CC00828F20 /* AppDelegate.m in Sources */,
 				A3F6636C1D5C03E000F7E25D /* User+CoreDataProperties.m in Sources */,

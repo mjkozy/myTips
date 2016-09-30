@@ -19,22 +19,20 @@
 
 
 
+- (void)setCellView:(UIView *)cellView {
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
+    
 }
 
-
-
-//- (void)setEntry:(Entry *)newEntry {
+//- (void)setEntry:(PFObject *)newEntry {
 //
 //    if (newEntry != _entries) {
 //        _entries = newEntry;
 //    }
-//    self.dateLabel.text = _entries.date;
+//    self.dateLabel.text = [_entries objectForKey:@"date"];
 //    self.dateLabel.numberOfLines = 2;
-//    self.tipsLabel.text = [NSString stringWithFormat:@"$%.2f",[_entries.totalSales floatValue]];
-//    self.salesLabel.text = [NSString stringWithFormat:@"$%.2f",[_entries.totalTips floatValue]];
+//    self.tipsLabel.text = [_entries objectForKey:@"totalSales"];
+//    self.salesLabel.text = [_entries objectForKey:@"totalTips"];
 //}
 
 @end
