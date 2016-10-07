@@ -21,6 +21,5 @@
 @property Entry *entry;
 @property (weak, nonatomic) IBOutlet UITableView *tipsTableView;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *deleteButton;
 
 @end

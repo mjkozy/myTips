@@ -75,6 +75,7 @@
 - (void)retrieveEmployerName {
     PFUser *user = [PFUser currentUser];
     PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
+    query.cachePolicy = kPFCachePolicyCacheElseNetwork;
     if (user.objectId == nil) {
         [self performSegueWithIdentifier:@"logInSegue" sender:self];
     }else {

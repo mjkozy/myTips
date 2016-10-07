@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
-#import "KeychainWrapper.h"
+
 
 
 @interface LogInViewController : UIViewController
-@property (strong, nonatomic)KeychainWrapper *keyChain;
+
 
 
 

@@ -31,6 +31,7 @@
 		A34D50DD1C77666600499596 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A34D50DC1C77666600499596 /* libsqlite3.0.tbd */; };
 		A34D50DF1C7766BB00499596 /* libz.1.1.3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A34D50DE1C7766BB00499596 /* libz.1.1.3.tbd */; };
 		A34D512E1C7EAECB00499596 /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A34D512D1C7EAECA00499596 /* EventKitUI.framework */; };
+		A355FD751DA826B600ACC32E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = A355FD741DA826B600ACC32E /* Constants.m */; };
 		A3A47C621D11AC67005FA5A2 /* TipTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A3A47C601D11AC67005FA5A2 /* TipTracker.xcdatamodeld */; };
 		A3A47C7D1D131415005FA5A2 /* DescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A47C7C1D131415005FA5A2 /* DescriptionCell.m */; };
 		A3A4E7A91C5F15CC00828F20 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A4E7A81C5F15CC00828F20 /* main.m */; };
@@ -118,6 +119,8 @@
 		A34D50DC1C77666600499596 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		A34D50DE1C7766BB00499596 /* libz.1.1.3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.1.3.tbd; path = usr/lib/libz.1.1.3.tbd; sourceTree = SDKROOT; };
 		A34D512D1C7EAECA00499596 /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
+		A355FD731DA826B600ACC32E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		A355FD741DA826B600ACC32E /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		A3A47C581D0A15FA005FA5A2 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		A3A47C611D11AC67005FA5A2 /* TipTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TipTracker.xcdatamodel; sourceTree = "<group>"; };
 		A3A47C7B1D131415005FA5A2 /* DescriptionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DescriptionCell.h; sourceTree = "<group>"; };
@@ -306,6 +309,8 @@
 		A3A4E79B1C5F15CC00828F20 = {
 			isa = PBXGroup;
 			children = (
+				A355FD731DA826B600ACC32E /* Constants.h */,
+				A355FD741DA826B600ACC32E /* Constants.m */,
 				A3AC09B41D3D7AB200099293 /* CoreFoundation.framework */,
 				A3D006611D3D67F1000E6395 /* Foundation.framework */,
 				A3D0065F1D3D67E3000E6395 /* UIKit.framework */,
@@ -571,6 +576,7 @@
 				A3067DEA1D5278D200BB0CC7 /* DetailsTableViewController.m in Sources */,
 				A3BD8AE61C8617E1000A8430 /* InputDataView.m in Sources */,
 				A3A4E7A91C5F15CC00828F20 /* main.m in Sources */,
+				A355FD751DA826B600ACC32E /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

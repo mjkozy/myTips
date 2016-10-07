@@ -10,7 +10,6 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-@class KeychainItemWrapper;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

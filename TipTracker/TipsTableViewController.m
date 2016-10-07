@@ -16,7 +16,7 @@
 
 
 
-@interface TipsTableViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface TipsTableViewController ()<UITableViewDelegate,UITableViewDataSource, UITextFieldDelegate>
 @property (strong, nonatomic) NSMutableArray *entryObjects;
 @property (strong, nonatomic) NSArray *entryData;
 @property (strong, nonatomic) NSArray *currentEmployerName;
@@ -42,86 +42,94 @@
     self.tipsTableView.backgroundView = mainImageView;
     self.tipsTableView.backgroundColor = [UIColor grayColor];
 
+    [self.navigationItem setTitle:@"Overview"];
+
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(fetchEntryData) forControlEvents:UIControlEventValueChanged];
-
-//    PFUser *user = [PFUser currentUser];
-//    PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-//    [query whereKey:@"user" equalTo:user];
-//    [query findObjectsInBackgroundWithBlock:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     PFUser *user = [PFUser currentUser];
     if (user) {
-        NSLog(@"%@", user.username);
     }
     [self fetchEntryData];
     PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
+    query.cachePolicy = kPFCachePolicyCacheElseNetwork;
     [query whereKey:@"userId" equalTo:user.objectId];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable objects, NSError * _Nullable error) {
         if (!error) {
             self.currentEmployerName = [NSArray arrayWithObject:objects];
-            NSLog(@"%@", self.currentEmployerName);
         }
     }];
 }
 
 - (IBAction)didTapAddEntryButton:(id)sender {
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"New Employer" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Add Tips" message:nil preferredStyle:UIAlertControllerStyleAlert];
+
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = @"Employer";
+        textField.keyboardType = UIKeyboardTypeDecimalPad;
+        textField.placeholder = @"enter sales";
+                                 }];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.keyboardType = UIKeyboardTypeDecimalPad;
+        textField.placeholder = @"enter tips";
+        }];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"enter notes";
     }];
+
     UIAlertAction *addAction = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 
         UITextField *newSales = [[alertController textFields]firstObject];
-        UITextField *newTips = [[alertController textFields]lastObject];
+        UITextField *newTips = [[alertController textFields] objectAtIndex:1];
+        UITextField *notes = [[alertController textFields] lastObject];
 
-        NSString *newSalesString = newSales.text;
-        NSString *newTipsString = newTips.text;
+        NSString *newSalesString = [NSString stringWithFormat:@"$%.2f", newSales.text.floatValue];
+        NSString *newTipsString = [NSString stringWithFormat:@"$%.2f", newTips.text.floatValue];
+        NSString *notesString = notes.text;
+
+        float sales = newSales.text.floatValue;
+        float tips =  newTips.text.floatValue;
+
+        NSString *percentage = [NSString stringWithFormat:@"%.2f%%", tips/sales];
+        NSDate *date = [NSDate date];
+        NSDateFormatter *format = [NSDateFormatter new];
+        format.locale = [NSLocale currentLocale];
+        [format setDateFormat:@"MMM dd, yyyy"];
+        NSString *stringFromDate = [format stringFromDate:date];
+
+        PFUser *currentUser = [PFUser currentUser];
         NSIndexPath *indexPath = [self.tipsTableView indexPathForSelectedRow];
-        PFObject *entryObject = [self.entryObjects objectAtIndex:indexPath.row];
-        [entryObject addObject:newSalesString forKey:@"totalSales"];
-        [entryObject addObject:newTipsString forKey:@"totalTips"];
-//        [object setObject:[PFUser currentUser] forKey:@"userId"];
+        PFObject *employer = [self.currentEmployerName objectAtIndex:indexPath.row];
+        PFObject *entryObject = [PFObject objectWithClassName:@"Entries"];
+        [entryObject setObject:newSalesString forKey:@"totalSales"];
+        [entryObject setObject:newTipsString forKey:@"totalTips"];
+        [entryObject setObject:currentUser.objectId forKey:@"createdBy"];
+        [entryObject setObject:employer.objectId forKey:@"companyId"];
+        [entryObject setObject:notesString forKey:@"notes"];
+        [entryObject setObject:percentage forKey:@"percentEarned"];
+        [entryObject setObject:stringFromDate forKey:@"date"];
 
         [entryObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if (error) {
                 NSLog(@"Cannot save at this time");
             }
         }];
+        [self fetchEntryData];
     }];
+
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:addAction];
     [alertController addAction:cancelAction];
     [self presentViewController:alertController animated:YES completion:nil];
 }
-- (IBAction)deleteAllButtonTapped:(id)sender {
-    PFQuery *deleteAll = [PFQuery queryWithClassName:@"Entries"];
-    PFUser *currentUser = [PFUser currentUser];
-    [deleteAll whereKey:@"createdBy" equalTo:currentUser];
-    [deleteAll findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        UIAlertController *deleteController = [UIAlertController alertControllerWithTitle:@"Delete all entries?" message:nil preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okayAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            for (PFObject *deleteObj in self.entryObjects) {
-                [deleteObj deleteInBackground];
-                  [self.tipsTableView reloadData];
-            }
-
-        }];
-        [deleteController addAction:okayAction];
-        [self presentViewController:deleteController animated:YES completion:^{
-
-        }];
-    }];
-}
 
 - (void)fetchEntryData {
     PFQuery *query = [PFQuery queryWithClassName:@"Entries"];
+    query.cachePolicy = kPFCachePolicyNetworkElseCache;
     [query whereKey:@"createdBy" equalTo:[[PFUser currentUser] objectId]];
-    [query orderByAscending:@"date"];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if (!error) {
             self.entryData = objects;
@@ -223,8 +231,8 @@
     }
     if ([segue.identifier isEqualToString:@"addInfoSegue"]) {
         UINavigationController *inputNav = segue.destinationViewController;
-        InputDataView *inputVC = (InputDataView *)inputNav.topViewController;
-        NSLog(@"%@", inputVC);
+        InputDataView *inputVC;
+        inputVC = (InputDataView *)inputNav.topViewController;
     }
 }
 

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Dou-EI-1bI">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Dou-EI-1bI">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -7,148 +7,6 @@
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
-        <!--Input Data View-->
-        <scene sceneID="tmd-n4-UHa">
-            <objects>
-                <tableViewController id="KVV-8j-rOK" customClass="InputDataView" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleAspectFit" alwaysBounceVertical="YES" scrollEnabled="NO" bouncesZoom="NO" keyboardDismissMode="onDrag" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="1gp-W0-XYV">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
-                        <sections>
-                            <tableViewSection id="Jge-NG-7PM">
-                                <cells>
-                                    <tableViewCell clipsSubviews="YES" tag="40" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="employerCell" rowHeight="487" id="iAd-OR-kZ9">
-                                        <rect key="frame" x="0.0" y="99" width="600" height="487"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="iAd-OR-kZ9" id="2wn-VB-7w1">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="486"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="appbackground" translatesAutoresizingMaskIntoConstraints="NO" id="P0o-Ef-15T">
-                                                    <rect key="frame" x="8" y="8" width="584" height="470"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="470" id="AzR-Sk-eQN"/>
-                                                        <constraint firstAttribute="height" constant="470" id="b8G-w4-Xzy"/>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="584" id="suc-3t-8ii"/>
-                                                        <constraint firstAttribute="width" constant="584" id="yMY-yC-8Xq"/>
-                                                    </constraints>
-                                                    <variation key="default">
-                                                        <mask key="constraints">
-                                                            <exclude reference="AzR-Sk-eQN"/>
-                                                        </mask>
-                                                    </variation>
-                                                </imageView>
-                                                <textField opaque="NO" clipsSubviews="YES" tag="16" contentMode="scaleToFill" verticalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="total tips 0.00" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" background="PlaceholderPicture" translatesAutoresizingMaskIntoConstraints="NO" id="22P-OV-DBc">
-                                                    <rect key="frame" x="190" y="162" width="238" height="30"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="238" id="A2o-4l-XdI"/>
-                                                        <constraint firstAttribute="height" constant="30" id="hW6-cm-63s"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Bold" family="Iowan Old Style" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                                                    <variation key="default">
-                                                        <mask key="constraints">
-                                                            <exclude reference="hW6-cm-63s"/>
-                                                        </mask>
-                                                    </variation>
-                                                </textField>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFF-FZ-OIB">
-                                                    <rect key="frame" x="235" y="89" width="149" height="21"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Italic" family="Iowan Old Style" pointSize="15"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <textField opaque="NO" clipsSubviews="YES" tag="16" contentMode="scaleToFill" verticalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" placeholder="notes" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5gl-Rf-Ow8">
-                                                    <rect key="frame" x="190" y="200" width="238" height="86"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="86" id="M18-NF-D7v"/>
-                                                        <constraint firstAttribute="width" constant="238" id="tge-YI-sbb"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Bold" family="Iowan Old Style" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                                                </textField>
-                                                <textField opaque="NO" clipsSubviews="YES" tag="15" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="total sales 0.00" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f8t-xo-XVj">
-                                                    <rect key="frame" x="190" y="118" width="238" height="30"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="238" id="ugE-91-Giz"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Bold" family="Iowan Old Style" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                                                </textField>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="leading" secondItem="22P-OV-DBc" secondAttribute="leading" id="4BJ-CW-34d"/>
-                                                <constraint firstItem="22P-OV-DBc" firstAttribute="top" secondItem="f8t-xo-XVj" secondAttribute="bottom" constant="14" id="55x-CT-mpF"/>
-                                                <constraint firstItem="22P-OV-DBc" firstAttribute="top" secondItem="2wn-VB-7w1" secondAttribute="top" constant="162" id="L8d-r1-BnK"/>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="top" secondItem="22P-OV-DBc" secondAttribute="bottom" constant="8" symbolic="YES" id="M0J-AB-Yz2"/>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="centerX" secondItem="gFF-FZ-OIB" secondAttribute="centerX" id="S27-7F-CPE"/>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="top" secondItem="22P-OV-DBc" secondAttribute="bottom" constant="8" id="Upu-Le-hzA"/>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="centerY" secondItem="2wn-VB-7w1" secondAttribute="centerY" id="Wae-sp-I6r"/>
-                                                <constraint firstItem="f8t-xo-XVj" firstAttribute="leading" secondItem="22P-OV-DBc" secondAttribute="leading" id="a1B-Wq-mFB"/>
-                                                <constraint firstItem="P0o-Ef-15T" firstAttribute="centerX" secondItem="2wn-VB-7w1" secondAttribute="centerX" id="iVN-n7-5co"/>
-                                                <constraint firstItem="gFF-FZ-OIB" firstAttribute="top" secondItem="22P-OV-DBc" secondAttribute="bottom" constant="-103" id="tKU-Lk-IyG"/>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="centerY" secondItem="P0o-Ef-15T" secondAttribute="centerY" id="uEO-in-wnF"/>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="top" secondItem="gFF-FZ-OIB" secondAttribute="bottom" constant="90" id="xw6-ja-b5d"/>
-                                                <constraint firstItem="P0o-Ef-15T" firstAttribute="top" secondItem="2wn-VB-7w1" secondAttribute="topMargin" id="xz7-P9-Vi8"/>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="top" secondItem="P0o-Ef-15T" secondAttribute="bottom" constant="-360" id="yNc-VC-wtG"/>
-                                                <constraint firstItem="gFF-FZ-OIB" firstAttribute="width" secondItem="22P-OV-DBc" secondAttribute="width" constant="-89" id="zC6-tS-Hgy"/>
-                                                <constraint firstItem="5gl-Rf-Ow8" firstAttribute="leading" secondItem="P0o-Ef-15T" secondAttribute="trailing" constant="-402" id="zW8-4c-UMf"/>
-                                            </constraints>
-                                            <variation key="default">
-                                                <mask key="constraints">
-                                                    <exclude reference="xz7-P9-Vi8"/>
-                                                    <exclude reference="L8d-r1-BnK"/>
-                                                    <exclude reference="Upu-Le-hzA"/>
-                                                    <exclude reference="yNc-VC-wtG"/>
-                                                </mask>
-                                            </variation>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
-                            </tableViewSection>
-                        </sections>
-                        <connections>
-                            <outlet property="dataSource" destination="KVV-8j-rOK" id="afj-c7-F83"/>
-                            <outlet property="delegate" destination="KVV-8j-rOK" id="PjH-eM-FmH"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="gDq-6V-Uuw">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="FWJ-Kt-e9u">
-                            <connections>
-                                <action selector="cancelButtonTapped:" destination="KVV-8j-rOK" id="VVi-eg-dXv"/>
-                                <segue destination="Ef9-pL-nGU" kind="unwind" identifier="unwindToMain" unwindAction="unwindToMain:" id="AB0-ew-RKS"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="MNx-17-cub">
-                            <connections>
-                                <action selector="saveButtonTapped:" destination="KVV-8j-rOK" id="G4y-gf-yF9"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="cancelButton" destination="FWJ-Kt-e9u" id="qXM-im-QFM"/>
-                        <outlet property="employerLabel" destination="gFF-FZ-OIB" id="Kyc-pM-ATu"/>
-                        <outlet property="inputTableView" destination="1gp-W0-XYV" id="Klj-rA-qUY"/>
-                        <outlet property="notesTextField" destination="5gl-Rf-Ow8" id="LbJ-zC-3bZ"/>
-                        <outlet property="saveButton" destination="MNx-17-cub" id="sho-9a-UDH"/>
-                        <outlet property="totalSalesTextField" destination="f8t-xo-XVj" id="2kh-uG-XKh"/>
-                        <outlet property="totalTipsTextField" destination="22P-OV-DBc" id="TaW-S5-Gku"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gZZ-qC-jO0" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="Ef9-pL-nGU" userLabel="Exit" sceneMemberID="exit"/>
-            </objects>
-            <point key="canvasLocation" x="284" y="772"/>
-        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="heY-Js-9sK">
             <objects>
@@ -398,72 +256,72 @@
         <scene sceneID="axI-sT-ifC">
             <objects>
                 <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="I9N-7r-2em" customClass="TipsTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleAspectFit" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="250" sectionHeaderHeight="28" sectionFooterHeight="28" id="sWs-W0-j66">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleAspectFit" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="90" sectionHeaderHeight="28" sectionFooterHeight="28" id="sWs-W0-j66">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" selectionStyle="none" indentationWidth="10" reuseIdentifier="descriptionCell" rowHeight="250" id="1Do-SE-09p" customClass="DescriptionCell">
-                                <rect key="frame" x="0.0" y="92" width="600" height="250"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" selectionStyle="none" indentationWidth="10" reuseIdentifier="descriptionCell" rowHeight="90" id="1Do-SE-09p" customClass="DescriptionCell">
+                                <rect key="frame" x="0.0" y="92" width="600" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Do-SE-09p" id="Nr6-Mb-WOE">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="249"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="89"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sbA-zi-aSA">
-                                            <rect key="frame" x="8" y="16" width="584" height="217"/>
+                                            <rect key="frame" x="8" y="13" width="584" height="68"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PTY-Fb-osg">
-                                                    <rect key="frame" x="8" y="0.0" width="250" height="20"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Bold" family="Iowan Old Style" pointSize="20"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="notes" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FiY-T9-PZM">
+                                                    <rect key="frame" x="49" y="51" width="310" height="15"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Total Sales:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZTr-EH-bHH">
-                                                    <rect key="frame" x="124" y="28" width="95" height="20"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="17"/>
+                                                    <rect key="frame" x="8" y="18" width="75" height="15"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Total Tips:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lCc-Vx-dg4">
-                                                    <rect key="frame" x="124" y="56" width="95" height="20"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="17"/>
+                                                    <rect key="frame" x="8" y="33" width="75" height="15"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fhX-38-JZ7">
-                                                    <rect key="frame" x="227" y="84" width="130" height="20"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PTY-Fb-osg">
+                                                    <rect key="frame" x="8" y="0.0" width="250" height="17"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Bold" family="Iowan Old Style" pointSize="17"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LNp-bD-gb5">
-                                                    <rect key="frame" x="227" y="56" width="130" height="20"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="17"/>
+                                                    <rect key="frame" x="81" y="33" width="60" height="15"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z1z-y4-Kn4">
-                                                    <rect key="frame" x="227" y="28" width="130" height="20"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="17"/>
+                                                    <rect key="frame" x="81" y="18" width="60" height="15"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="notes" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FiY-T9-PZM">
-                                                    <rect key="frame" x="68" y="112" width="370" height="60"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Notes:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E2N-EJ-adi">
+                                                    <rect key="frame" x="8" y="51" width="42" height="15"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Notes" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E2N-EJ-adi">
-                                                    <rect key="frame" x="8" y="132" width="52" height="20"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fhX-38-JZ7">
+                                                    <rect key="frame" x="219" y="33" width="45" height="15"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Percentage:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="df8-on-W06">
-                                                    <rect key="frame" x="124" y="84" width="95" height="20"/>
-                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="17"/>
+                                                    <rect key="frame" x="145" y="33" width="74" height="15"/>
+                                                    <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="14"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -477,10 +335,10 @@
                                         <constraint firstItem="sbA-zi-aSA" firstAttribute="leading" secondItem="Nr6-Mb-WOE" secondAttribute="leadingMargin" id="6sx-Go-sOR"/>
                                         <constraint firstItem="sbA-zi-aSA" firstAttribute="top" secondItem="Nr6-Mb-WOE" secondAttribute="topMargin" constant="8" id="7Tz-Ap-1KW"/>
                                         <constraint firstAttribute="trailing" secondItem="sbA-zi-aSA" secondAttribute="trailing" id="8r2-92-XQY"/>
-                                        <constraint firstItem="sbA-zi-aSA" firstAttribute="centerY" secondItem="Nr6-Mb-WOE" secondAttribute="centerY" id="AoW-ZS-31c"/>
+                                        <constraint firstItem="sbA-zi-aSA" firstAttribute="centerY" secondItem="Nr6-Mb-WOE" secondAttribute="centerY" constant="2.5" id="AoW-ZS-31c"/>
                                         <constraint firstItem="sbA-zi-aSA" firstAttribute="leading" secondItem="Nr6-Mb-WOE" secondAttribute="leadingMargin" constant="8" id="FfK-Ks-2vP"/>
                                         <constraint firstItem="sbA-zi-aSA" firstAttribute="trailing" secondItem="Nr6-Mb-WOE" secondAttribute="trailingMargin" constant="-8" id="O53-di-A2R"/>
-                                        <constraint firstItem="sbA-zi-aSA" firstAttribute="top" secondItem="Nr6-Mb-WOE" secondAttribute="topMargin" constant="8" id="OVD-zB-aZv"/>
+                                        <constraint firstItem="sbA-zi-aSA" firstAttribute="top" secondItem="Nr6-Mb-WOE" secondAttribute="topMargin" constant="5" id="OVD-zB-aZv"/>
                                         <constraint firstItem="sbA-zi-aSA" firstAttribute="centerY" secondItem="Nr6-Mb-WOE" secondAttribute="centerY" id="V9K-GT-7KR"/>
                                         <constraint firstItem="sbA-zi-aSA" firstAttribute="trailing" secondItem="Nr6-Mb-WOE" secondAttribute="trailingMargin" id="XIB-dx-6a5"/>
                                         <constraint firstItem="sbA-zi-aSA" firstAttribute="top" secondItem="Nr6-Mb-WOE" secondAttribute="topMargin" constant="10" id="ZCJ-9d-OC7"/>
@@ -528,21 +386,14 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="Xy9-fe-Rjt">
-                        <barButtonItem key="leftBarButtonItem" title="Delete All" id="CzT-cQ-NXB">
-                            <connections>
-                                <action selector="deleteAllButtonTapped:" destination="I9N-7r-2em" id="KxF-uS-a1L"/>
-                            </connections>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="qIO-Zf-kRv">
                             <connections>
                                 <action selector="didTapAddEntryButton:" destination="I9N-7r-2em" id="sfe-CR-ckY"/>
-                                <segue destination="9v3-NQ-l7j" kind="presentation" identifier="" id="hcW-xb-6RX"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="addEntryButton" destination="qIO-Zf-kRv" id="yo0-Hb-e7w"/>
-                        <outlet property="deleteButton" destination="CzT-cQ-NXB" id="XOn-ao-jaE"/>
                         <outlet property="tipsTableView" destination="sWs-W0-j66" id="Ge2-wh-O31"/>
                     </connections>
                 </tableViewController>
@@ -557,9 +408,9 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="FXe-Pw-heF">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="employerCell" textLabel="Lj0-cV-8ns" style="IBUITableViewCellStyleDefault" id="akT-cz-f99">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="employerCell" textLabel="Lj0-cV-8ns" style="IBUITableViewCellStyleDefault" id="akT-cz-f99">
                                 <rect key="frame" x="0.0" y="114" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="akT-cz-f99" id="oJ3-Eb-rss">
@@ -652,31 +503,8 @@
             </objects>
             <point key="canvasLocation" x="-1926" y="772"/>
         </scene>
-        <!--Add Entries-->
-        <scene sceneID="NbQ-Lj-kgi">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9v3-NQ-l7j" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Add Entries" image="editIcon.png" selectedImage="editIcon.png" id="oQ5-sd-xf6"/>
-                    <toolbarItems/>
-                    <navigationItem key="navigationItem" id="5Jp-A9-W1B"/>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="pf8-ql-byT">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="KVV-8j-rOK" kind="relationship" relationship="rootViewController" id="KLn-N8-cZV"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xVr-Lf-Mg3" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-485" y="772"/>
-        </scene>
     </scenes>
     <resources>
-        <image name="PlaceholderPicture" width="32" height="32"/>
         <image name="appbackground" width="200" height="200"/>
         <image name="editIcon.png" width="30" height="30"/>
         <image name="tipsIcon.png" width="16" height="30"/>

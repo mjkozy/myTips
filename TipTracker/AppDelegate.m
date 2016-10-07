@@ -9,6 +9,8 @@
 #import "EmployerTableView.h"
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import "Constants.h"
+
 
 @interface AppDelegate ()
 
@@ -22,8 +24,8 @@
 
     [NSThread sleepForTimeInterval:1.5];
     // Initialize Parse.
-    [Parse setApplicationId:@"9g3ypl3nSWlk30wotY1eXAZDxPvwlIIN5SpP2cpG"
-                  clientKey:@"dmVwnqS4puw15zWPrFmE46SKmS4jQxMmXAHiONtN"];
+    [Parse setApplicationId:aPPlicationID
+                  clientKey:cLIentKey];
 
 //    ParseClientConfiguration *config = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
 //
