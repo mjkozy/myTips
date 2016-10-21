@@ -32,6 +32,7 @@
 		A34D50DF1C7766BB00499596 /* libz.1.1.3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A34D50DE1C7766BB00499596 /* libz.1.1.3.tbd */; };
 		A34D512E1C7EAECB00499596 /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A34D512D1C7EAECA00499596 /* EventKitUI.framework */; };
 		A355FD751DA826B600ACC32E /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = A355FD741DA826B600ACC32E /* Constants.m */; };
+		A3881A6F1DB166B200ED4BA8 /* UpdateMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = A3881A6E1DB166B200ED4BA8 /* UpdateMethods.m */; };
 		A3A47C621D11AC67005FA5A2 /* TipTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A3A47C601D11AC67005FA5A2 /* TipTracker.xcdatamodeld */; };
 		A3A47C7D1D131415005FA5A2 /* DescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A47C7C1D131415005FA5A2 /* DescriptionCell.m */; };
 		A3A4E7A91C5F15CC00828F20 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A4E7A81C5F15CC00828F20 /* main.m */; };
@@ -94,8 +95,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A3067DE81D5278D200BB0CC7 /* DetailsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailsTableViewController.h; sourceTree = "<group>"; };
-		A3067DE91D5278D200BB0CC7 /* DetailsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailsTableViewController.m; sourceTree = "<group>"; };
+		A3067DE81D5278D200BB0CC7 /* DetailsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetailsTableViewController.h; path = TipTracker/DetailsTableViewController.h; sourceTree = "<group>"; };
+		A3067DE91D5278D200BB0CC7 /* DetailsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetailsTableViewController.m; path = TipTracker/DetailsTableViewController.m; sourceTree = "<group>"; };
 		A31EC3801CF3FC6C005C05CA /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		A33015AF1CA5CE520090327F /* NavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationViewController.h; sourceTree = "<group>"; };
 		A33015B01CA5CE520090327F /* NavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationViewController.m; sourceTree = "<group>"; };
@@ -121,6 +122,8 @@
 		A34D512D1C7EAECA00499596 /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
 		A355FD731DA826B600ACC32E /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		A355FD741DA826B600ACC32E /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		A3881A6D1DB166B200ED4BA8 /* UpdateMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateMethods.h; sourceTree = "<group>"; };
+		A3881A6E1DB166B200ED4BA8 /* UpdateMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateMethods.m; sourceTree = "<group>"; };
 		A3A47C581D0A15FA005FA5A2 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		A3A47C611D11AC67005FA5A2 /* TipTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TipTracker.xcdatamodel; sourceTree = "<group>"; };
 		A3A47C7B1D131415005FA5A2 /* DescriptionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DescriptionCell.h; sourceTree = "<group>"; };
@@ -145,8 +148,8 @@
 		A3B6482E1D64B4A2004AD5AF /* Employer+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Employer+CoreDataProperties.m"; sourceTree = "<group>"; };
 		A3B6482F1D64B4A2004AD5AF /* Employer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Employer.h; sourceTree = "<group>"; };
 		A3B648301D64B4A2004AD5AF /* Employer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Employer.m; sourceTree = "<group>"; };
-		A3BD8AE41C8617E1000A8430 /* InputDataView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputDataView.h; sourceTree = "<group>"; };
-		A3BD8AE51C8617E1000A8430 /* InputDataView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InputDataView.m; sourceTree = "<group>"; };
+		A3BD8AE41C8617E1000A8430 /* InputDataView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputDataView.h; path = TipTracker/InputDataView.h; sourceTree = "<group>"; };
+		A3BD8AE51C8617E1000A8430 /* InputDataView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InputDataView.m; path = TipTracker/InputDataView.m; sourceTree = "<group>"; };
 		A3BD8AE71C87240D000A8430 /* TipsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TipsTableViewController.h; sourceTree = "<group>"; };
 		A3BD8AE81C87240D000A8430 /* TipsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TipsTableViewController.m; sourceTree = "<group>"; };
 		A3C079721CAC9F82007C4BB3 /* LogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogInViewController.h; sourceTree = "<group>"; };
@@ -234,18 +237,12 @@
 		A3121D0E1C627D2200A1BBB5 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				A3067DE81D5278D200BB0CC7 /* DetailsTableViewController.h */,
-				A3067DE91D5278D200BB0CC7 /* DetailsTableViewController.m */,
 				A3FBA0451CCADFE9002DAA40 /* EmployerTableView.h */,
 				A3FBA0461CCADFE9002DAA40 /* EmployerTableView.m */,
-				A3C079721CAC9F82007C4BB3 /* LogInViewController.h */,
-				A3C079731CAC9F82007C4BB3 /* LogInViewController.m */,
 				A3BD8AE71C87240D000A8430 /* TipsTableViewController.h */,
 				A3BD8AE81C87240D000A8430 /* TipsTableViewController.m */,
 				A33015AF1CA5CE520090327F /* NavigationViewController.h */,
 				A33015B01CA5CE520090327F /* NavigationViewController.m */,
-				A3C079751CACBBB1007C4BB3 /* SignUpViewController.h */,
-				A3C079761CACBBB1007C4BB3 /* SignUpViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -255,8 +252,10 @@
 			children = (
 				A3A47C7B1D131415005FA5A2 /* DescriptionCell.h */,
 				A3A47C7C1D131415005FA5A2 /* DescriptionCell.m */,
-				A3BD8AE41C8617E1000A8430 /* InputDataView.h */,
-				A3BD8AE51C8617E1000A8430 /* InputDataView.m */,
+				A3C079721CAC9F82007C4BB3 /* LogInViewController.h */,
+				A3C079731CAC9F82007C4BB3 /* LogInViewController.m */,
+				A3C079751CACBBB1007C4BB3 /* SignUpViewController.h */,
+				A3C079761CACBBB1007C4BB3 /* SignUpViewController.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -306,9 +305,23 @@
 			name = FrameWorks;
 			sourceTree = "<group>";
 		};
+		A3881A701DB1688F00ED4BA8 /* FutureUpdates */ = {
+			isa = PBXGroup;
+			children = (
+				A3067DE81D5278D200BB0CC7 /* DetailsTableViewController.h */,
+				A3067DE91D5278D200BB0CC7 /* DetailsTableViewController.m */,
+				A3BD8AE41C8617E1000A8430 /* InputDataView.h */,
+				A3BD8AE51C8617E1000A8430 /* InputDataView.m */,
+				A3881A6D1DB166B200ED4BA8 /* UpdateMethods.h */,
+				A3881A6E1DB166B200ED4BA8 /* UpdateMethods.m */,
+			);
+			name = FutureUpdates;
+			sourceTree = "<group>";
+		};
 		A3A4E79B1C5F15CC00828F20 = {
 			isa = PBXGroup;
 			children = (
+				A3881A701DB1688F00ED4BA8 /* FutureUpdates */,
 				A355FD731DA826B600ACC32E /* Constants.h */,
 				A355FD741DA826B600ACC32E /* Constants.m */,
 				A3AC09B41D3D7AB200099293 /* CoreFoundation.framework */,
@@ -563,6 +576,7 @@
 				A3C079741CAC9F82007C4BB3 /* LogInViewController.m in Sources */,
 				A3A47C7D1D131415005FA5A2 /* DescriptionCell.m in Sources */,
 				A3BD8AE91C87240D000A8430 /* TipsTableViewController.m in Sources */,
+				A3881A6F1DB166B200ED4BA8 /* UpdateMethods.m in Sources */,
 				A3F663661D5BC9F000F7E25D /* Entry+CoreDataProperties.m in Sources */,
 				A3C079771CACBBB1007C4BB3 /* SignUpViewController.m in Sources */,
 				A3FBA0471CCADFE9002DAA40 /* EmployerTableView.m in Sources */,

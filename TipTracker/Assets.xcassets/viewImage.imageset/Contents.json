@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "tipGraphics.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "splashPage.png",
       "scale" : "2x"
     },
     {

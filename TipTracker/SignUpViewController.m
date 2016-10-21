@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *employerTextField;
 @property (strong, nonatomic) NSMutableArray *userData;
 @property (strong,nonatomic) NSManagedObjectContext *moc;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 @end
 
@@ -36,7 +37,6 @@
     [super viewDidLoad];
     AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
     self.moc = appDelegate.managedObjectContext;
-
 
     self.firstNameTextField.delegate = self;
     self.passwordTextField.delegate = self;
@@ -49,6 +49,9 @@
     [self.signUpButton.layer setShadowOffset:CGSizeMake(5,5)];
     [self.signUpButton.layer setShadowColor:[[UIColor blackColor]CGColor]];
     [self.signUpButton.layer setShadowOpacity:0.5];
+
+    [self.spinner setHidesWhenStopped:YES];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -59,7 +62,6 @@
 - (IBAction)onSignUpButtonTapped:(UIButton *)button {
     NSString *firstName = self.firstNameTextField.text;
     NSString *password = self.passwordTextField.text;
-    NSString *email = self.emailTextField.text;
     NSString *employer = self.employerTextField.text;
 
     if ([firstName length] == 0 || [password length] == 0) {
@@ -81,12 +83,11 @@
         PFObject *employerObject = [PFObject objectWithClassName:@"Employer"];
         newUser.username = firstName;
         newUser.password = password;
-        newUser.email = email;
         [employerObject setObject:employer forKey:@"companyName"];
 
         [newUser setObject:[employerObject objectForKey:@"companyName"] forKey:@"currentEmployer"];
 
-        NSLog(@"%@  %@  %@  %@", newUser.username, newUser.password, newUser.email, employerObject[@"companyName"]);
+        NSLog(@"%@  %@  %@", newUser.username, newUser.password, employerObject[@"companyName"]);
 
         [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if (error) {
@@ -102,13 +103,16 @@
                 [self presentViewController:alert animated:YES completion:nil];
 
             }else {
-//                [self performSegueWithIdentifier:@"addInfoSegue" sender:self];
+                //Activity indicator showing progress
+                [self.spinner startAnimating];
+
                 [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                     if (!error) {
                         [newUser setObject:[employerObject objectForKey:@"companyName"] forKey:@"currentEmployer"];
                         [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                             [employerObject setObject:[[PFUser currentUser] objectId]forKey:@"userId"];
                             [employerObject saveInBackground];
+                            [self.spinner stopAnimating];
                             [self.navigationController popToRootViewControllerAnimated:YES];
                         }];
                     }

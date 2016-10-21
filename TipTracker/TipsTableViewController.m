@@ -25,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addEntryButton;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
+
 @end
 
 @implementation TipsTableViewController
@@ -37,7 +38,7 @@
     AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
     self.managedObjectContext = appDelegate.managedObjectContext;
 
-    UIImage *mainBackGroundImage = [UIImage imageNamed:@"splashPage.png"];
+    UIImage *mainBackGroundImage = [UIImage imageNamed:@"viewImage.png"];
     UIImageView *mainImageView = [[UIImageView alloc] initWithImage:mainBackGroundImage];
     self.tipsTableView.backgroundView = mainImageView;
     self.tipsTableView.backgroundColor = [UIColor grayColor];
@@ -52,10 +53,9 @@
     [super viewWillAppear:animated];
     PFUser *user = [PFUser currentUser];
     if (user) {
-    }
     [self fetchEntryData];
+    }
     PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-    query.cachePolicy = kPFCachePolicyCacheElseNetwork;
     [query whereKey:@"userId" equalTo:user.objectId];
     [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable objects, NSError * _Nullable error) {
         if (!error) {
@@ -79,19 +79,51 @@
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = @"enter notes";
     }];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.keyboardType = UIKeyboardTypeDecimalPad;
+        textField.placeholder = @"enter expense percent";
+    }];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.keyboardType = UIKeyboardTypeDecimalPad;
+        textField.placeholder = @"enter taxes percent";
+    }];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.keyboardType = UIKeyboardTypeDecimalPad;
+        textField.placeholder = @"enter savings percent";
+    }];
 
     UIAlertAction *addAction = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 
         UITextField *newSales = [[alertController textFields]firstObject];
         UITextField *newTips = [[alertController textFields] objectAtIndex:1];
-        UITextField *notes = [[alertController textFields] lastObject];
+        UITextField *notes = [[alertController textFields] objectAtIndex:2];
+        UITextField *newExpenses = [[alertController textFields] objectAtIndex:3];
+        UITextField *newTaxes = [[alertController textFields] objectAtIndex:4];
+        UITextField *newSavings = [[alertController textFields] lastObject];
 
-        NSString *newSalesString = [NSString stringWithFormat:@"$%.2f", newSales.text.floatValue];
-        NSString *newTipsString = [NSString stringWithFormat:@"$%.2f", newTips.text.floatValue];
+        float sales = [newSales.text floatValue];
+        float tips =  [newTips.text floatValue];
+        float expenses = [newExpenses.text floatValue];
+        float taxes = [newTaxes.text floatValue];
+        float savings = [newSavings.text floatValue];
+
         NSString *notesString = notes.text;
+        NSString *newSalesString = [NSString stringWithFormat:@"$%.2f", sales];
+        NSString *newTipsString = [NSString stringWithFormat:@"$%.2f", tips];
 
-        float sales = newSales.text.floatValue;
-        float tips =  newTips.text.floatValue;
+        float getExpenses = tips * expenses;
+        float tipsAfterExpenses = tips - getExpenses;
+        float getTaxes = tipsAfterExpenses * taxes;
+        float tipsAfterTaxes = tipsAfterExpenses - getTaxes;
+        float getSavings = tipsAfterTaxes * savings;
+        float finalSpendingCash = tipsAfterTaxes - getSavings;
+
+
+        NSString *expensesString = [NSString stringWithFormat:@"$%.2f", getExpenses];
+        NSString *taxesString = [NSString stringWithFormat:@"$%.2f", getTaxes];
+        NSString *savingsString = [NSString stringWithFormat:@"$%.2f", getSavings];
+
+        NSString *spendingCashString = [NSString stringWithFormat:@"$%.2f", finalSpendingCash];
 
         NSString *percentage = [NSString stringWithFormat:@"%.2f%%", tips/sales];
         NSDate *date = [NSDate date];
@@ -111,13 +143,16 @@
         [entryObject setObject:notesString forKey:@"notes"];
         [entryObject setObject:percentage forKey:@"percentEarned"];
         [entryObject setObject:stringFromDate forKey:@"date"];
+        [entryObject setObject:expensesString forKey:@"expenses"];
+        [entryObject setObject:taxesString forKey:@"taxes"];
+        [entryObject setObject:savingsString forKey:@"savings"];
+        [entryObject setObject:spendingCashString forKey:@"spendingCash"];
 
         [entryObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (error) {
-                NSLog(@"Cannot save at this time");
+            if (!error) {
+                [self fetchEntryData];
             }
         }];
-        [self fetchEntryData];
     }];
 
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
@@ -145,28 +180,12 @@
     }];
 }
 
-- (void)sumTips {
-    NSFetchRequest *request = [NSFetchRequest new];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:self.managedObjectContext];
-    [request setEntity:entity];
-    NSSortDescriptor *tipDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"totalTips" ascending:NO];
-    request.sortDescriptors = @[tipDescriptor];
-    NSArray *ytdTips = [self.managedObjectContext executeFetchRequest:request error:nil];
-    self.ytdTipsData = [NSMutableArray arrayWithArray:ytdTips];
-    float total = 0;
-    for (Entry *entry in self.ytdTipsData) {
-        total += [entry.totalTips floatValue];
-        NSNumber *ytdNumber = [NSNumber numberWithFloat:total];
-        self.navigationItem.title = [NSString stringWithFormat:@"YTD: $%.2f", [ytdNumber floatValue]];
-    }
-}
 
 #pragma mark TableView DataSource Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     return self.entryObjects.count;
-
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -192,16 +211,20 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    DescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"descriptionCell"];
+    DescriptionCell *cell = (DescriptionCell *)[tableView dequeueReusableCellWithIdentifier:@"descriptionCell"];
 
     cell.backgroundColor = [UIColor clearColor];
 
     PFObject *entries = [self.entryObjects objectAtIndex:indexPath.row];
     cell.dateLabel.text = [entries objectForKey:@"date"];
-    cell.tipsAmountLabel.text = [NSString stringWithFormat:@" %@",[entries objectForKey:@"totalTips"]];
-    cell.salesAmountLabel.text = [NSString stringWithFormat:@" %@",[entries objectForKey:@"totalSales"]];
+    cell.tipsAmountLabel.text = [entries objectForKey:@"totalTips"];
+    cell.salesAmountLabel.text = [entries objectForKey:@"totalSales"];
     cell.notesLabel.text = [entries objectForKey:@"notes"];
-    cell.percentEarnedLabel.text = [NSString stringWithFormat:@" %@",[entries objectForKey:@"percentEarned"] ];
+    cell.percentEarnedLabel.text = [entries objectForKey:@"percentEarned"];
+    cell.billsLabel.text = [entries objectForKey:@"expenses"];
+    cell.taxesLabel.text = [entries objectForKey:@"taxes"];
+    cell.savingsLabel.text = [entries objectForKey:@"savings"];
+    cell.spendingCashLabel.text = [entries objectForKey:@"spendingCash"];
 
         return cell;
 }
@@ -211,13 +234,14 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-
         [self.entryObjects removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
+
     PFObject *deleteObject = [self.entryObjects objectAtIndex:indexPath.row];
-        [deleteObject deleteInBackground];
+    [deleteObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         [deleteObject saveInBackground];
+    }];
 }
 
 #pragma mark - Navigation

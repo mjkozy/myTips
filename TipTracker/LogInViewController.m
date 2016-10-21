@@ -17,12 +17,13 @@
 @interface LogInViewController ()<UITextFieldDelegate>
 
 @property (strong, nonatomic) NSArray *userData;
-@property (weak, nonatomic) IBOutlet UITextField *firstName;
+@property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UIButton *logInButton;
 @property (weak, nonatomic) IBOutlet UIButton *signUpButton;
 @property (strong, nonatomic) NSManagedObjectContext *moc;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 
 
@@ -38,26 +39,27 @@
     self.moc = appDelegate.managedObjectContext;
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(loadEmployeeData) forControlEvents:UIControlEventValueChanged];
-    [self.navigationController.navigationBar setHidden:YES];
 
-    self.passwordTextField.delegate = self;
-    [self.passwordTextField becomeFirstResponder];
+    self.firstNameTextField.delegate = self;
+    [self.firstNameTextField becomeFirstResponder];
     [self customButtons];
-    PFUser *user = [PFUser currentUser];
-    if (user) {
-        [self.signUpButton setEnabled:NO];
-    }
+    [self.spinner setHidesWhenStopped:YES];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.navigationController.navigationBar setHidden:YES];
-    PFObject *object;
-    [self.firstName setText:[object objectForKey:@"firstname"]];
+    PFUser *user = [PFUser currentUser];
+    if (user) {
+        [self.firstNameTextField setText:user.password];
+        [self.passwordTextField setText:user.password];
+        self.signUpButton.hidden = YES;
+    }
 }
 
 - (IBAction)onLogInButtonTapped:(UIButton *)button {
-    NSString *firstName = self.firstName.text;
+    NSString *firstName = self.firstNameTextField.text;
     NSString *password = self.passwordTextField.text;
     //Error Handling
     if ([firstName length] == 0 || [password length] == 0) {
@@ -68,6 +70,7 @@
         [alert addAction:okay];
     }
     else {
+        [self.spinner startAnimating];
         [PFUser logInWithUsernameInBackground:firstName password:password
                                         block:^(PFUser *user, NSError *error) {
                                             if (error) {
@@ -77,6 +80,7 @@
                                                 [alert addAction:cancel];
                                                 [self presentViewController:alert animated:YES completion:nil];
                                             }else {
+                                                [self.spinner stopAnimating];
                                                 PFUser *currentUser = [PFUser currentUser];
                                                 if ([currentUser.objectId isKindOfClass:[@"Employer" class]]) {
                                                     [self.navigationController popViewControllerAnimated:NO];
@@ -112,7 +116,7 @@
     PFUser *user = [PFUser currentUser];
     if (user) {
         PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-        [query whereKey:@"firstname" equalTo:user];
+        [query whereKey:@"userId" equalTo:user.objectId];
 
         [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
             if (!error) {

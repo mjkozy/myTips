@@ -14,16 +14,16 @@
 
 @property (strong, nonatomic) PFObject *entries;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
-@property (weak, nonatomic) IBOutlet UILabel *salesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *salesAmountLabel;
-@property (weak, nonatomic) IBOutlet UILabel *tipsLabel;
 @property (weak, nonatomic) IBOutlet UILabel *tipsAmountLabel;
-@property (weak, nonatomic) IBOutlet UILabel *percentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *percentEarnedLabel;
-@property (weak, nonatomic) IBOutlet UILabel *ytdTotalLabel;
 @property (weak, nonatomic) IBOutlet UILabel *notesLabel;
 @property (weak, nonatomic) IBOutlet UIView *cellView;
-@property (weak, nonatomic) IBOutlet UIImageView *cellImage;
+@property (weak, nonatomic) IBOutlet UILabel *billsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *savingsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *spendingCashLabel;
+@property (weak, nonatomic) IBOutlet UILabel *taxesLabel;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 
 
 

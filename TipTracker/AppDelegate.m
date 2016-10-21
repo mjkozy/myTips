@@ -22,18 +22,17 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
 
-    [NSThread sleepForTimeInterval:1.5];
     // Initialize Parse.
-    [Parse setApplicationId:aPPlicationID
-                  clientKey:cLIentKey];
+//    [Parse setApplicationId:aPPlicationID
+//                  clientKey:cLIentKey];
 
-//    ParseClientConfiguration *config = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
-//
-//        configuration.clientKey = @"dmVwnqS4puw15zWPrFmE46SKmS4jQxMmXAHiONtN";
-//        configuration.applicationId = @"9g3ypl3nSWlk30wotY1eXAZDxPvwlIIN5SpP2cpG";
-//        configuration.server = @"https://mytip.herokuapp.com/parse";
-//    }];
-//    [Parse initializeWithConfiguration:config];
+    ParseClientConfiguration *config = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
+
+        configuration.clientKey = cLIentKey;
+        configuration.applicationId = aPPlicationID;
+        configuration.server = cONfigServer;
+    }];
+    [Parse initializeWithConfiguration:config];
 
 //    PFObject *object = [PFObject objectWithClassName:@"Foo"];
 //    object[@"foo"]= @"bar";

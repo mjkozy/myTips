@@ -134,6 +134,7 @@
     NSDateFormatter *format = [NSDateFormatter new];
     format.locale = [NSLocale currentLocale];
     [format setDateFormat:@"MMM dd, yyyy"];
+
     NSString *stringFromDate = [format stringFromDate:date];
     NSString *tipsString = [NSString stringWithFormat:@"$%.2f", tipsEarned];
     NSString *salesString = [NSString stringWithFormat:@"$%.2f", dailyRing];

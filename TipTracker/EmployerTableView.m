@@ -35,7 +35,7 @@
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(retrieveEmployerName) forControlEvents:UIControlEventValueChanged];
 
-    UIImage *image = [UIImage imageNamed:@"splashPage.png"];
+    UIImage *image = [UIImage imageNamed:@"viewImage.png"];
     UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:image];
     self.employerTableView.backgroundView = backgroundImage;
     self.navigationItem.title = @"MyTips";
@@ -98,34 +98,34 @@
     [self performSegueWithIdentifier:@"logInSegue" sender:self];
 }
 
-- (IBAction)addEmployerTapped:(UIBarButtonItem *)sender {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"New Employer" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = @"Employer";
-    }];
-    UIAlertAction *addAction = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-
-        UITextField *employerName = [[alertController textFields] firstObject];
-        NSString *enteredEmployer = employerName.text;
-
-        PFObject *employerObject = [PFObject objectWithClassName:@"Employer"];
-
-        PFUser *user = [PFUser currentUser];
-        [employerObject setObject:enteredEmployer forKey:@"companyName"];
-        [user setObject:employerObject[@"companyName"] forKey:@"currentEmployer"];
-        [employerObject setObject:user forKey:@"userId"];
-
-        [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (error) {
-                NSLog(@"Cannot save at this time");
-            }
-        }];
-    }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    [alertController addAction:addAction];
-    [alertController addAction:cancelAction];
-    [self presentViewController:alertController animated:YES completion:nil];
-}
+//- (IBAction)addEmployerTapped:(UIBarButtonItem *)sender {
+//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"New Employer" message:nil preferredStyle:UIAlertControllerStyleAlert];
+//    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+//        textField.placeholder = @"Employer";
+//    }];
+//    UIAlertAction *addAction = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//
+//        UITextField *employerName = [[alertController textFields] firstObject];
+//        NSString *enteredEmployer = employerName.text;
+//
+//        PFObject *employerObject = [PFObject objectWithClassName:@"Employer"];
+//
+//        PFUser *user = [PFUser currentUser];
+//        [employerObject setObject:enteredEmployer forKey:@"companyName"];
+//        [user setObject:[employerObject objectForKey:@"companyName"] forKey:@"currentEmployer"];
+//        [employerObject setObject:user.objectId forKey:@"userId"];
+//
+//        [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+//            if (error) {
+//                NSLog(@"Cannot save at this time");
+//            }
+//        }];
+//    }];
+//    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+//    [alertController addAction:addAction];
+//    [alertController addAction:cancelAction];
+//    [self presentViewController:alertController animated:YES completion:nil];
+//}
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 
@@ -155,7 +155,6 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"employerCell"];
 
     PFUser *currentUser = [PFUser currentUser];
-//    PFObject *empObject = [self.employerName objectAtIndex:indexPath.row];
     cell.textLabel.font = [UIFont fontWithName:@"Iowan Old Style Roman" size:14];
     cell.textLabel.textColor = [UIColor whiteColor];
     cell.textLabel.text = [currentUser objectForKey:@"currentEmployer"];
@@ -171,16 +170,48 @@
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
     PFQuery *query = [PFQuery queryWithClassName:@"Entries"];
-    PFUser *user = [PFUser currentUser];
-    [query whereKey:@"userId" equalTo:user];
+    [query whereKey:@"createdBy" equalTo:[[PFUser currentUser] objectId]];
+    [query whereKeyExists:@"companyId"];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if (!error) {
             [PFObject deleteAllInBackground:objects];
-            [self.employerTableView reloadData];
+            NSLog(@"Deleted: %@", objects);
         }
     }];
-    [self deleteCoreData];
+    for (PFObject *emp in self.employerName) {
+        [emp delete];
+        [emp saveInBackgroundWithBlock:nil];
+    }
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"New Employer" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"Employer";
+    }];
+    UIAlertAction *addAction = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+
+        UITextField *employerName = [[alertController textFields] firstObject];
+        NSString *enteredEmployer = employerName.text;
+
+        PFObject *employerObject = [PFObject objectWithClassName:@"Employer"];
+
+        PFUser *user = [PFUser currentUser];
+        [employerObject setObject:enteredEmployer forKey:@"companyName"];
+        [user setObject:[employerObject objectForKey:@"companyName"] forKey:@"currentEmployer"];
+        [employerObject setObject:user.objectId forKey:@"userId"];
+
+        [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"Cannot save at this time");
+            }
+        }];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    [alertController addAction:addAction];
+    [alertController addAction:cancelAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+
     [self.addEmployer setEnabled:YES];
+    [self deleteCoreData];
+
 }
 
 #pragma mark - Navigation
