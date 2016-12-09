@@ -66,10 +66,8 @@
     NSArray *deleteCD = [self.moc executeFetchRequest:request error:nil];
     for (Entry *deleteAll in deleteCD) {
         [self.moc deleteObject:deleteAll];
-        NSLog(@"Deleted: %@", deleteAll);
         [self.employerTableView reloadData];
     }
-
 }
 
 - (void)retrieveEmployerName {
@@ -98,35 +96,6 @@
     [self performSegueWithIdentifier:@"logInSegue" sender:self];
 }
 
-//- (IBAction)addEmployerTapped:(UIBarButtonItem *)sender {
-//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"New Employer" message:nil preferredStyle:UIAlertControllerStyleAlert];
-//    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-//        textField.placeholder = @"Employer";
-//    }];
-//    UIAlertAction *addAction = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//
-//        UITextField *employerName = [[alertController textFields] firstObject];
-//        NSString *enteredEmployer = employerName.text;
-//
-//        PFObject *employerObject = [PFObject objectWithClassName:@"Employer"];
-//
-//        PFUser *user = [PFUser currentUser];
-//        [employerObject setObject:enteredEmployer forKey:@"companyName"];
-//        [user setObject:[employerObject objectForKey:@"companyName"] forKey:@"currentEmployer"];
-//        [employerObject setObject:user.objectId forKey:@"userId"];
-//
-//        [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//            if (error) {
-//                NSLog(@"Cannot save at this time");
-//            }
-//        }];
-//    }];
-//    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-//    [alertController addAction:addAction];
-//    [alertController addAction:cancelAction];
-//    [self presentViewController:alertController animated:YES completion:nil];
-//}
-
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 
     NSString *currentEmployer = @"Current Employer";
@@ -142,7 +111,6 @@
     UIView *headerView = [UIView new];
     headerView.backgroundColor = [UIColor clearColor];
     UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 0, 600, 25)];
-    headerLabel.backgroundColor = [UIColor blackColor];
     headerLabel.shadowColor = [UIColor blackColor];
     headerLabel.textColor = [UIColor whiteColor];
     headerLabel.font = [UIFont fontWithName:@"Iowan Old Style Roman" size:20];
@@ -175,7 +143,11 @@
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if (!error) {
             [PFObject deleteAllInBackground:objects];
-            NSLog(@"Deleted: %@", objects);
+        }if (error) {
+        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"Cannot retrieve data at this time, please try again later" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
+        [controller addAction:okAction];
+        [self presentViewController:controller animated:YES completion:nil];
         }
     }];
     for (PFObject *emp in self.employerName) {
@@ -200,7 +172,10 @@
 
         [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if (error) {
-                NSLog(@"Cannot save at this time");
+                UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"Cannot retrieve data at this time, please try again later" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
+                [controller addAction:okAction];
+                [self presentViewController:controller animated:YES completion:nil];
             }
         }];
     }];

@@ -19,12 +19,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *percentEarnedLabel;
 @property (weak, nonatomic) IBOutlet UILabel *notesLabel;
 @property (weak, nonatomic) IBOutlet UIView *cellView;
-@property (weak, nonatomic) IBOutlet UILabel *billsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *expensesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *savingsLabel;
 @property (weak, nonatomic) IBOutlet UILabel *spendingCashLabel;
 @property (weak, nonatomic) IBOutlet UILabel *taxesLabel;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
-
 
 
 

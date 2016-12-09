@@ -8,9 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		A3067DEA1D5278D200BB0CC7 /* DetailsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3067DE91D5278D200BB0CC7 /* DetailsTableViewController.m */; };
+		A313B2D31DF77F1400765BD1 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A313B2D21DF77F1400765BD1 /* DetailViewController.m */; };
 		A31EC3811CF3FC6C005C05CA /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A31EC3801CF3FC6C005C05CA /* Default-568h@2x.png */; };
 		A33015B11CA5CE520090327F /* NavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A33015B01CA5CE520090327F /* NavigationViewController.m */; };
 		A330E7911C9B9E3900CBA205 /* InputDataView.m in Sources */ = {isa = PBXBuildFile; fileRef = A3BD8AE51C8617E1000A8430 /* InputDataView.m */; };
+		A3417C011DF6255C00B4438E /* UserData.m in Sources */ = {isa = PBXBuildFile; fileRef = A3417C001DF6255C00B4438E /* UserData.m */; };
 		A3496DEE1CEF9C25009F91C2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3496DED1CEF9C25009F91C2 /* CoreData.framework */; };
 		A3496E0D1CEFBB57009F91C2 /* export.png in Resources */ = {isa = PBXBuildFile; fileRef = A3496E0A1CEFBB57009F91C2 /* export.png */; };
 		A3496E121CEFBEAB009F91C2 /* editIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = A3496E0F1CEFBEAB009F91C2 /* editIcon.png */; };
@@ -97,9 +99,13 @@
 /* Begin PBXFileReference section */
 		A3067DE81D5278D200BB0CC7 /* DetailsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetailsTableViewController.h; path = TipTracker/DetailsTableViewController.h; sourceTree = "<group>"; };
 		A3067DE91D5278D200BB0CC7 /* DetailsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetailsTableViewController.m; path = TipTracker/DetailsTableViewController.m; sourceTree = "<group>"; };
+		A313B2D11DF77F1400765BD1 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		A313B2D21DF77F1400765BD1 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		A31EC3801CF3FC6C005C05CA /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		A33015AF1CA5CE520090327F /* NavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationViewController.h; sourceTree = "<group>"; };
 		A33015B01CA5CE520090327F /* NavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationViewController.m; sourceTree = "<group>"; };
+		A3417BFF1DF6255C00B4438E /* UserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserData.h; sourceTree = "<group>"; };
+		A3417C001DF6255C00B4438E /* UserData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserData.m; sourceTree = "<group>"; };
 		A3496DED1CEF9C25009F91C2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A3496E0A1CEFBB57009F91C2 /* export.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = export.png; sourceTree = "<group>"; };
 		A3496E0F1CEFBEAB009F91C2 /* editIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = editIcon.png; sourceTree = "<group>"; };
@@ -250,6 +256,8 @@
 		A3121D101C627DDE00A1BBB5 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				A313B2D11DF77F1400765BD1 /* DetailViewController.h */,
+				A313B2D21DF77F1400765BD1 /* DetailViewController.m */,
 				A3A47C7B1D131415005FA5A2 /* DescriptionCell.h */,
 				A3A47C7C1D131415005FA5A2 /* DescriptionCell.m */,
 				A3C079721CAC9F82007C4BB3 /* LogInViewController.h */,
@@ -263,6 +271,8 @@
 		A3121D111C62820500A1BBB5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A3417BFF1DF6255C00B4438E /* UserData.h */,
+				A3417C001DF6255C00B4438E /* UserData.m */,
 				A3B6482D1D64B4A2004AD5AF /* Employer+CoreDataProperties.h */,
 				A3B6482E1D64B4A2004AD5AF /* Employer+CoreDataProperties.m */,
 				A3B6482F1D64B4A2004AD5AF /* Employer.h */,
@@ -321,13 +331,13 @@
 		A3A4E79B1C5F15CC00828F20 = {
 			isa = PBXGroup;
 			children = (
+				A31EC3801CF3FC6C005C05CA /* Default-568h@2x.png */,
 				A3881A701DB1688F00ED4BA8 /* FutureUpdates */,
 				A355FD731DA826B600ACC32E /* Constants.h */,
 				A355FD741DA826B600ACC32E /* Constants.m */,
 				A3AC09B41D3D7AB200099293 /* CoreFoundation.framework */,
 				A3D006611D3D67F1000E6395 /* Foundation.framework */,
 				A3D0065F1D3D67E3000E6395 /* UIKit.framework */,
-				A31EC3801CF3FC6C005C05CA /* Default-568h@2x.png */,
 				A3EE34CF1CD1B80800974604 /* appIcons */,
 				A34D50DB1C7765BE00499596 /* FrameWorks */,
 				A3A4E7A61C5F15CC00828F20 /* TipTracker */,
@@ -587,10 +597,12 @@
 				A33015B11CA5CE520090327F /* NavigationViewController.m in Sources */,
 				A3F663671D5BC9F000F7E25D /* Entry.m in Sources */,
 				A3B648321D64B4A2004AD5AF /* Employer.m in Sources */,
+				A3417C011DF6255C00B4438E /* UserData.m in Sources */,
 				A3067DEA1D5278D200BB0CC7 /* DetailsTableViewController.m in Sources */,
 				A3BD8AE61C8617E1000A8430 /* InputDataView.m in Sources */,
 				A3A4E7A91C5F15CC00828F20 /* main.m in Sources */,
 				A355FD751DA826B600ACC32E /* Constants.m in Sources */,
+				A313B2D31DF77F1400765BD1 /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -740,7 +752,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = TipTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.michaelkozy.myTips;
 				PRODUCT_NAME = myTips;
@@ -754,14 +766,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = TipTracker/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.michaelkozy.myTips;
 				PRODUCT_NAME = myTips;

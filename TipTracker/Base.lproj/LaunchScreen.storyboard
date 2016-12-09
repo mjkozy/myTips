@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="01J-lp-oVM">
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -18,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tipGraphics.png" translatesAutoresizingMaskIntoConstraints="NO" id="Okx-6w-9Oe">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splashPage" translatesAutoresizingMaskIntoConstraints="NO" id="Okx-6w-9Oe">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="600" id="0Ou-i7-x0T"/>
@@ -28,13 +27,9 @@
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="Okx-6w-9Oe" secondAttribute="trailing" constant="-20" id="2A8-Wg-tQ9"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Okx-6w-9Oe" secondAttribute="trailing" constant="-20" id="5nV-3o-Kkd"/>
                             <constraint firstItem="Okx-6w-9Oe" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="AAH-r4-KfA"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="Okx-6w-9Oe" secondAttribute="bottom" id="Ex9-Lo-cYk"/>
                             <constraint firstItem="Okx-6w-9Oe" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" id="JiN-X8-ork"/>
-                            <constraint firstItem="Okx-6w-9Oe" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="bAC-9r-8I9"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="Okx-6w-9Oe" secondAttribute="bottom" id="ekC-3t-EtC"/>
-                            <constraint firstItem="Okx-6w-9Oe" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" id="fKM-3b-iC5"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -44,6 +39,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="tipGraphics.png" width="200" height="200"/>
+        <image name="splashPage" width="200" height="200"/>
     </resources>
 </document>

@@ -70,6 +70,7 @@
         [alert addAction:okay];
     }
     else {
+
         [self.spinner startAnimating];
         [PFUser logInWithUsernameInBackground:firstName password:password
                                         block:^(PFUser *user, NSError *error) {
