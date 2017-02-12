@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15G31" minimumToolsVersion="Xcode 7.0">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="16D32" minimumToolsVersion="Xcode 7.0">
     <entity name="Employer" representedClassName="Employer" syncable="YES">
         <attribute name="employerName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="employee" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="employers" inverseEntity="User" syncable="YES"/>
-        <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Entry" inverseName="employers" inverseEntity="Entry" syncable="YES"/>
+        <relationship name="employee" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="employer" inverseEntity="User" syncable="YES"/>
+        <relationship name="entries" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Entry" inverseName="employer" inverseEntity="Entry" syncable="YES"/>
     </entity>
     <entity name="Entry" representedClassName="Entry" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="expenses" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="percentEarned" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="totalSales" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="totalTips" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <relationship name="employers" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Employer" inverseName="entries" inverseEntity="Employer" syncable="YES"/>
+        <attribute name="savings" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="spendingCash" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="taxes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalSales" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="totalTips" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="employer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Employer" inverseName="entries" inverseEntity="Employer" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES">
-        <attribute name="firstname" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="employers" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Employer" inverseName="employee" inverseEntity="Employer" syncable="YES"/>
+        <relationship name="employer" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Employer" inverseName="employee" inverseEntity="Employer" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Employer" positionX="1278" positionY="-1683" width="128" height="90"/>
-        <element name="Entry" positionX="1467" positionY="-1647" width="162" height="133"/>
-        <element name="User" positionX="1107" positionY="-1854" width="128" height="90"/>
+        <element name="Employer" positionX="-263" positionY="11" width="128" height="88"/>
+        <element name="Entry" positionX="160" positionY="-45" width="128" height="195"/>
+        <element name="User" positionX="-531" positionY="-45" width="128" height="88"/>
     </elements>
 </model>

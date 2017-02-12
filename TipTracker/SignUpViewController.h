@@ -9,11 +9,11 @@
 #import "AppDelegate.h"
 #import <UIKit/UIKit.h>
 #import "TipsTableViewController.h"
-;
+#import <FirebaseAuth/FirebaseAuth.h>
 
 
 @interface SignUpViewController : UIViewController
-
+@property (strong, nonatomic) FIRDatabaseReference *ref;
 
 @end
 

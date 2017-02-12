@@ -12,27 +12,28 @@
 #import "Constants.h"
 
 
+
 @interface AppDelegate ()
+
 
 @end
 
+@import Firebase;
 @implementation AppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
 
-    // Initialize Parse.
-//    [Parse setApplicationId:aPPlicationID
-//                  clientKey:cLIentKey];
-
-    ParseClientConfiguration *config = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
-
-        configuration.clientKey = cLIentKey;
-        configuration.applicationId = aPPlicationID;
-        configuration.server = cONfigServer;
-    }];
-    [Parse initializeWithConfiguration:config];
+//    [FIRApp configure];
+//
+//    ParseClientConfiguration *config = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
+//
+//        configuration.clientKey = cLIentKey;
+//        configuration.applicationId = aPPlicationID;
+//        configuration.server = cONfigServer;
+//    }];
+//    [Parse initializeWithConfiguration:config];
 
 //    PFObject *object = [PFObject objectWithClassName:@"Foo"];
 //    object[@"foo"]= @"bar";

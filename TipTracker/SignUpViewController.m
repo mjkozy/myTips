@@ -15,10 +15,10 @@
 
 
 
+
 @interface SignUpViewController ()<UITextFieldDelegate>
 
 
-@property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UITextField *emailTextField;
 @property (weak, nonatomic) IBOutlet UIButton *signUpButton;
@@ -35,10 +35,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     self.moc = appDelegate.managedObjectContext;
 
-    self.firstNameTextField.delegate = self;
+//    self.ref = [[FIRDatabase database] reference];
+
     self.passwordTextField.delegate = self;
     self.emailTextField.delegate = self;
 
@@ -51,8 +52,9 @@
     [self.signUpButton.layer setShadowOpacity:0.5];
 
     [self.spinner setHidesWhenStopped:YES];
-
 }
+
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -60,11 +62,11 @@
 }
 
 - (IBAction)onSignUpButtonTapped:(UIButton *)button {
-    NSString *firstName = self.firstNameTextField.text;
     NSString *password = self.passwordTextField.text;
     NSString *employer = self.employerTextField.text;
+    NSString *email = self.emailTextField.text;
 
-    if ([firstName length] == 0 || [password length] == 0) {
+    if ([email length] == 0 || [password length] == 0) {
             UIAlertController *alert = [UIAlertController  alertControllerWithTitle:@"Error"
                                                                             message:@"Please Complete All Fields"
                                                                      preferredStyle:UIAlertControllerStyleAlert];
@@ -78,50 +80,43 @@
     }
     else
     {
-        
-        PFUser *newUser = [PFUser user];
-        PFObject *employerObject = [PFObject objectWithClassName:@"Employer"];
-        newUser.username = firstName;
-        newUser.password = password;
-        [employerObject setObject:employer forKey:@"companyName"];
+        NSManagedObjectContext *context = self.moc;
+        NSManagedObject *userInfo = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:context];
+        NSManagedObject *employerName = [NSEntityDescription insertNewObjectForEntityForName:@"Employer" inManagedObjectContext:context];
+        [userInfo setValue:email forKey:@"firstname"];
+        [userInfo setValue:password forKey:@"password"];
+        [employerName setValue:employer forKey:@"employerName"];
+        [employerName setValue:[userInfo valueForKey:@"firstname"] forKey:@"employee"];
+        [userInfo setValue:[employerName valueForKey:@"employerName"] forKey:@"employers"];
 
-        [newUser setObject:[employerObject objectForKey:@"companyName"] forKey:@"currentEmployer"];
-
-        NSLog(@"%@  %@  %@", newUser.username, newUser.password, employerObject[@"companyName"]);
-
-        [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (error) {
-                UIAlertController *alert = [UIAlertController  alertControllerWithTitle:@"Error"
-                                                                                message:[error.userInfo objectForKey:@"error"]
-                                                                         preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *okay = [UIAlertAction actionWithTitle:@"Okay"
-                                                               style:UIAlertActionStyleDefault
-                                                             handler:^(UIAlertAction * _Nonnull action) {
-
-                                                             }];
-                [alert addAction:okay];
-                [self presentViewController:alert animated:YES completion:nil];
-
-            }else {
-                //Activity indicator showing progress
-                [self.spinner startAnimating];
-
-                [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                    if (!error) {
-                        [newUser setObject:[employerObject objectForKey:@"companyName"] forKey:@"currentEmployer"];
-                        [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                            [employerObject setObject:[[PFUser currentUser] objectId]forKey:@"userId"];
-                            [employerObject saveInBackground];
-                            [self.spinner stopAnimating];
-                            [self.navigationController popToRootViewControllerAnimated:YES];
-                        }];
-                    }
-                }];
-            }
-        }];
+        [context save:nil];
+        NSLog(@"Employer: %@  User: %@  Passowrd: %@  EmployerName: %@", [userInfo valueForKey:@"employerName"], [userInfo valueForKey:@"firstname"], [userInfo valueForKey:@"password"], [employerName valueForKey:@"employerName"]);
+//        [[FIRAuth auth] createUserWithEmail:email password:password completion:^(FIRUser * _Nullable user, NSError * _Nullable error) {
+//            if (user) {
+//                [self setUserName:user];
+//                [[[_ref child:@"Employer"]child:user.uid]setValue:@{@"currentEmployer" : employer}];
+//
+//            }
+//            NSLog(@"%@  %@  %@", user.uid, user.email, employer);
+//        }];
+        [self.navigationController popToRootViewControllerAnimated:YES];
 
     }
 }
+
+- (void)setUserName:(FIRUser *)user {
+    FIRUserProfileChangeRequest *changeRequest = [user profileChangeRequest];
+    //user first part of email as username
+    changeRequest.displayName = [[user.email componentsSeparatedByString:@"@"] objectAtIndex:0];
+    [changeRequest commitChangesWithCompletion:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"%@", error.localizedDescription);
+            return;
+        }
+
+    }];
+}
+
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];

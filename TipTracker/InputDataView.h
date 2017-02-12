@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 #import <CoreData/CoreData.h>
+#import <Parse/Parse.h>
 
 
 @interface InputDataView : UITableViewController

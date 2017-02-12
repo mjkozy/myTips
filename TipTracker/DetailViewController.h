@@ -7,9 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UserData.h"
-
-@class UserData;
 
 @interface DetailViewController : UIViewController
 
@@ -22,7 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *taxesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *savingsLabel;
 @property (weak, nonatomic) IBOutlet UILabel *notesLabel;
-@property (strong, nonatomic) UserData *userData;
+
 
 
 @end

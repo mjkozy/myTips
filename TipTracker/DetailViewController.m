@@ -21,15 +21,15 @@
 
     [self setNeedsStatusBarAppearanceUpdate];
 
-    self.dateLabel.text = _userData.date;
-    self.spendingCashLabel.text = _userData.spendingCash;
-    self.salesLabel.text = _userData.sales;
-    self.tipsLabel.text = _userData.tips;
-    self.percentLabel.text = _userData.percent;
-    self.expensesLabel.text = _userData.expenses;
-    self.taxesLabel.text = _userData.taxes;
-    self.savingsLabel.text = _userData.savings;
-    self.notesLabel.text = _userData.notes;
+//    self.dateLabel.text = _userData.date;
+//    self.spendingCashLabel.text = _userData.spendingCash;
+//    self.salesLabel.text = [NSString stringWithFormat:@"Sales %@", _userData.sales];
+//    self.tipsLabel.text = [NSString stringWithFormat:@"Tips %@", _userData.tips];
+//    self.percentLabel.text = [NSString stringWithFormat:@"Percent of Sales %@", _userData.percent];
+//    self.expensesLabel.text = [NSString stringWithFormat:@"Expenses %@", _userData.expenses];
+//    self.taxesLabel.text = [NSString stringWithFormat: @"Taxes %@", _userData.taxes];
+//    self.savingsLabel.text = [NSString stringWithFormat: @"Savings %@",_userData.savings];
+//    self.notesLabel.text = _userData.notes;
 
     UISwipeGestureRecognizer *swipeToClose = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
     [swipeToClose setDirection:(UISwipeGestureRecognizerDirectionDown)];

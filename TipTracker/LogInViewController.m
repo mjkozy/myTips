@@ -7,7 +7,6 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
-#import "User.h"
 #import "TipsTableViewController.h"
 #import "SignUpViewController.h"
 #import "LogInViewController.h"
@@ -17,13 +16,15 @@
 @interface LogInViewController ()<UITextFieldDelegate>
 
 @property (strong, nonatomic) NSArray *userData;
-@property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
+@property (weak, nonatomic) IBOutlet UITextField *emailTextField;
+
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UIButton *logInButton;
 @property (weak, nonatomic) IBOutlet UIButton *signUpButton;
 @property (strong, nonatomic) NSManagedObjectContext *moc;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (weak, nonatomic) IBOutlet UIButton *passwordResetButton;
 
 
 
@@ -35,13 +36,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     self.moc = appDelegate.managedObjectContext;
     self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(loadEmployeeData) forControlEvents:UIControlEventValueChanged];
+//    [self.refreshControl addTarget:self action:@selector(loadEmployeeData) forControlEvents:UIControlEventValueChanged];
 
-    self.firstNameTextField.delegate = self;
-    [self.firstNameTextField becomeFirstResponder];
+    self.emailTextField.delegate = self;
+    [self.emailTextField becomeFirstResponder];
     [self customButtons];
     [self.spinner setHidesWhenStopped:YES];
 
@@ -49,20 +50,53 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self.navigationController.navigationBar setHidden:YES];
-    PFUser *user = [PFUser currentUser];
+    FIRUser *user = [FIRAuth auth].currentUser;
     if (user) {
-        [self.firstNameTextField setText:user.password];
-        [self.passwordTextField setText:user.password];
-        self.signUpButton.hidden = YES;
+        self.emailTextField.text = [NSString stringWithFormat:@"%@",user];
     }
 }
 
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//    [self.navigationController.navigationBar setHidden:YES];
+//    PFUser *user = [PFUser currentUser];
+//    if (user) {
+//        [self.emailTextField setText:user.password];
+//        [self.passwordTextField setText:user.password];
+//        self.signUpButton.hidden = YES;
+//    }
+//}
+- (IBAction)onPasswordResetTapped:(id)sender {
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Reset Password" message:@"Please enter your email address" preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.keyboardType = UIKeyboardTypeEmailAddress;
+        textField.placeholder = @"enter password";
+    }];
+    UIAlertAction *requestAction = [UIAlertAction actionWithTitle:@"Request Password" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UITextField *email = [[alertController textFields]firstObject];
+        NSString *emailAddress = email.text;
+
+        [[FIRAuth auth] sendPasswordResetWithEmail:emailAddress completion:^(NSError * _Nullable error) {
+            if (error) {
+                UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Unable to reset password at this time" message:nil preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okayAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [self presentViewController:controller animated:YES completion:nil];
+                }];
+                [controller addAction:okayAction];
+            }
+        }];
+
+    }];
+    [alertController addAction:requestAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
 - (IBAction)onLogInButtonTapped:(UIButton *)button {
-    NSString *firstName = self.firstNameTextField.text;
+    NSString *email = self.emailTextField.text;
     NSString *password = self.passwordTextField.text;
     //Error Handling
-    if ([firstName length] == 0 || [password length] == 0) {
+    if ([email length] == 0 || [password length] == 0) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"Please enter a valid username and password" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okay = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [self presentViewController:alert animated:YES completion:nil];
@@ -72,23 +106,27 @@
     else {
 
         [self.spinner startAnimating];
-        [PFUser logInWithUsernameInBackground:firstName password:password
-                                        block:^(PFUser *user, NSError *error) {
-                                            if (error) {
-                                                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:[error.userInfo objectForKey:@"error"] preferredStyle:UIAlertControllerStyleAlert];
-                                                UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Whoops" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                                                }];
-                                                [alert addAction:cancel];
-                                                [self presentViewController:alert animated:YES completion:nil];
-                                            }else {
-                                                [self.spinner stopAnimating];
-                                                PFUser *currentUser = [PFUser currentUser];
-                                                if ([currentUser.objectId isKindOfClass:[@"Employer" class]]) {
-                                                    [self.navigationController popViewControllerAnimated:NO];
-                                                }
-                                                [self.navigationController popToRootViewControllerAnimated:YES];
-                                            }
-                                    }];
+        [[FIRAuth auth] signInWithEmail:email password:password completion:^(FIRUser * _Nullable user, NSError * _Nullable error) {
+            NSLog(@"%@  %@ ", email, password);
+        }];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+//        [PFUser logInWithUsernameInBackground:email password:password
+//                                        block:^(PFUser *user, NSError *error) {
+//                                            if (error) {
+//                                                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:[error.userInfo objectForKey:@"error"] preferredStyle:UIAlertControllerStyleAlert];
+//                                                UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Whoops" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//                                                }];
+//                                                [alert addAction:cancel];
+//                                                [self presentViewController:alert animated:YES completion:nil];
+//                                            }else {
+//                                                [self.spinner stopAnimating];
+//                                                PFUser *currentUser = [PFUser currentUser];
+//                                                if ([currentUser.objectId isKindOfClass:[@"Employer" class]]) {
+//                                                    [self.navigationController popViewControllerAnimated:NO];
+//                                                }
+//                                                [self.navigationController popToRootViewControllerAnimated:YES];
+//                                            }
+//                                    }];
 
     }
 }
@@ -112,21 +150,27 @@
     return YES;
 }
 
-- (void)loadEmployeeData {
+//- (void)loadEmployeeData {
+//
+//    PFUser *user = [PFUser currentUser];
+//    if (user) {
+//        PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
+//        [query whereKey:@"userId" equalTo:user.objectId];
+//
+//        [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+//            if (!error) {
+//                self.userData = objects;
+//            }
+//            if ([self.refreshControl isRefreshing]) {
+//                [self.refreshControl endRefreshing];
+//            }
+//        }];
+//    }
+//}
 
-    PFUser *user = [PFUser currentUser];
+- (void)signedIn:(FIRUser *)user {
     if (user) {
-        PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-        [query whereKey:@"userId" equalTo:user.objectId];
-
-        [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-            if (!error) {
-                self.userData = objects;
-            }
-            if ([self.refreshControl isRefreshing]) {
-                [self.refreshControl endRefreshing];
-            }
-        }];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
 

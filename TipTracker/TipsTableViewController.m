@@ -10,19 +10,20 @@
 #import "SignUpViewController.h"
 #import "InputDataView.h"
 #import "TipsTableViewController.h"
-#import "AppDelegate.h"
 
 
 
-
-@interface TipsTableViewController ()<UITableViewDelegate,UITableViewDataSource, UITextFieldDelegate>
-@property (strong, nonatomic) NSMutableArray *entryObjects;
+@interface TipsTableViewController ()<UITableViewDelegate,UITableViewDataSource, UITextFieldDelegate, NSFetchedResultsControllerDelegate>
+@property (strong, nonatomic) NSMutableArray<FIRDataSnapshot *> *entryObjects;
 @property (strong, nonatomic) NSArray *entryData;
 @property (strong, nonatomic) NSArray *currentEmployerName;
-@property (strong, nonatomic) NSMutableArray *ytdTipsData;
+@property (strong, nonatomic) NSMutableArray *entries;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addEntryButton;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSManagedObjectContext *moc;
+@property (strong, nonatomic) NSString *employerName;
+@property (strong, nonatomic) NSDictionary *entriesDict;
 
 
 @end
@@ -34,8 +35,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
-    self.managedObjectContext = appDelegate.managedObjectContext;
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    self.moc = appDelegate.managedObjectContext;
+
+//    self.firebaseDBRef = [[FIRDatabase database] reference];
+    [self fetchEntryData];
+
+
+//    NSString *userId = [FIRAuth auth].currentUser.uid;
+//    [[[self.firebaseDBRef child:@"Employer"]child:userId] observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+//        NSDictionary *employerName = snapshot.value;
+//        self.employerName = employerName[@"currentEmployer"];
+//    }];
 
     UIImage *mainBackGroundImage = [UIImage imageNamed:@"viewImage.png"];
     UIImageView *mainImageView = [[UIImageView alloc] initWithImage:mainBackGroundImage];
@@ -44,31 +55,26 @@
 
     [self.navigationItem setTitle:@"Overview"];
 
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(fetchEntryData) forControlEvents:UIControlEventValueChanged];
+//    [self getFirebaseData];
+//    self.refreshControl = [UIRefreshControl new];
+//    [self.refreshControl addTarget:self action:@selector(fetchEntryData) forControlEvents:UIControlEventValueChanged];
 
     [self.spinner setHidesWhenStopped:YES];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    PFUser *user = [PFUser currentUser];
-    if (user) {
-    PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-    [query whereKey:@"userId" equalTo:user.objectId];
-    [query setCachePolicy:kPFCachePolicyCacheElseNetwork];
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable objects, NSError * _Nullable error) {
-        if (!error) {
-            self.currentEmployerName = [NSArray arrayWithObject:objects];
-        }else {
-            UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"You have exceeded the ammount of entries allowed, please add 12 months for $4.99 or additional month for 1.99" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
-            [controller addAction:okAction];
-            [self presentViewController:controller animated:YES completion:nil];
-        }
-        }];
-    }
-    [self fetchEntryData];
+
+//    NSString *userId = [FIRAuth auth].currentUser.uid;
+//    [[[self.firebaseDBRef child:@"Employer"]child:userId] observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+//        NSDictionary *employerName = snapshot.value;
+//        self.employerName = employerName[@"currentEmployer"];
+//
+//    }];
+
+//    [self getFirebaseData];
+
 }
 
 - (IBAction)didTapAddEntryButton:(id)sender {
@@ -76,52 +82,23 @@
     [self addInfo];
 
 }
-// Query Parse Server
-- (void)fetchEntryData {
-    PFQuery *query = [PFQuery queryWithClassName:@"Entries"];
-    [query whereKey:@"createdBy" equalTo:[[PFUser currentUser] objectId]];
-    // Parse Server Cache Policy first load cached results then query Parse Server
-    [query setCachePolicy:kPFCachePolicyCacheThenNetwork];
-    // Ascending order by date created
-    [query orderByAscending:@"date"];
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if (!error) {
-            self.entryData = objects;
-            self.entryObjects = [[NSMutableArray alloc] initWithArray:objects];
-            [self.tipsTableView reloadData];
-        }else {
-            UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"Cannot retrieve data at this time, please try again later" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
-            [controller addAction:okAction];
-            [self presentViewController:controller animated:YES completion:nil];
-        }
-        if ([self.refreshControl isRefreshing]) {
-            [self.refreshControl endRefreshing];
-        }
-    }];
-}
 
 #pragma mark TableView DataSource Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    if (self.entryObjects.count >= 14) {
-        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"You have exceeded the ammount of entries allowed, please add 12 months for $4.99 or additional month for 1.99" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
-        [controller addAction:okAction];
-        [self presentViewController:controller animated:YES completion:nil];
-        [self.addEntryButton setEnabled:NO];
-    }else {
-        return self.entryObjects.count;
-    }
-    return 14;
+//    if (self.entries.count >= 14) {
+//        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"You have exceeded the ammount of entries allowed, please add 12 months for $4.99 or additional month for 1.99" preferredStyle:UIAlertControllerStyleAlert];
+//        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
+//        [controller addAction:okAction];
+//        [self presentViewController:controller animated:YES completion:nil];
+//        [self.addEntryButton setEnabled:NO];
+//    }else {
+//        return self.entries.count;
+//    }
+    return self.entries.count;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-
-    PFUser *currentUser = [PFUser currentUser];
-    return [currentUser objectForKey:@"currentEmployer"];
-}
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *headerView = [UIView new];
@@ -129,8 +106,12 @@
     UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 0, 600, 25)];
     headerLabel.textColor = [UIColor whiteColor];
     headerLabel.font = [UIFont fontWithName:@"Iowan Old Style Roman" size:20];
-    PFUser *currentUser = [PFUser currentUser];;
-    headerLabel.text = [currentUser objectForKey:@"currentEmployer"];
+    NSString *userId = [FIRAuth auth].currentUser.uid;
+    [[[self.firebaseDBRef child:@"Employer"]child:userId] observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        NSDictionary *employerName = snapshot.value;
+        self.employerName = employerName[@"currentEmployer"];
+        headerLabel.text = self.employerName;
+    }];
 
     [headerView addSubview:headerLabel];
 
@@ -138,21 +119,33 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    DescriptionCell *cell = (DescriptionCell *)[tableView dequeueReusableCellWithIdentifier:@"descriptionCell"];
 
+    DescriptionCell *cell = (DescriptionCell *)[tableView dequeueReusableCellWithIdentifier:@"descriptionCell"];
     cell.backgroundColor = [UIColor clearColor];
 
-    PFObject *entries = [self.entryObjects objectAtIndex:indexPath.row];
-    cell.dateLabel.text = [entries objectForKey:@"date"];
-    cell.tipsAmountLabel.text = [entries objectForKey:@"totalTips"];
-    cell.salesAmountLabel.text = [entries objectForKey:@"totalSales"];
-    cell.notesLabel.text = [entries objectForKey:@"notes"];
-    cell.percentEarnedLabel.text = [entries objectForKey:@"percentEarned"];
-    cell.expensesLabel.text = [entries objectForKey:@"expenses"];
-    cell.taxesLabel.text = [entries objectForKey:@"taxes"];
-    cell.savingsLabel.text = [entries objectForKey:@"savings"];
-    cell.spendingCashLabel.text = [entries objectForKey:@"spendingCash"];
+//    CKRecord *requestRecords = [self.entries objectAtIndex:indexPath.row];
 
+    NSManagedObjectContext *moc = self.moc;
+    NSEntityDescription *requestRecords = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:moc];
+            cell.dateLabel.text = [requestRecords valueForKey:@"createdAt"];
+            cell.salesAmountLabel.text = [requestRecords valueForKey:@"totalSales"];
+            cell.tipsAmountLabel.text = [requestRecords valueForKey:@"totalTips"];
+
+
+
+//    PFObject *entry = [self.entries objectAtIndex:indexPath.row];
+
+//    if (cell == nil) {
+//        [self addInfo];
+//    }
+
+//    NSString *userID = [FIRAuth auth].currentUser.uid;
+//    [[[[_firebaseDBRef child:@"entries"]childByAutoId]child:userID] observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+//        NSDictionary *entry = snapshot.value;
+//        cell.dateLabel.text = entry[@"date"];
+//        cell.salesAmountLabel.text = entry[@"totalSales"];
+//        cell.tipsAmountLabel.text = entry[@"totalTips"];
+//    }];
     return cell;
 }
 
@@ -161,21 +154,103 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.entryObjects removeObjectAtIndex:indexPath.row];
+        [self.entries removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
-        PFObject *delObj = [self.entryObjects objectAtIndex:indexPath.row];
-        [delObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (!error) {
-                [delObj saveInBackgroundWithBlock:nil];
-            }
-        }];
-    if (self.entryObjects.count == 0) {
+    PFQuery *query = [PFQuery queryWithClassName:@"Entries"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        if (!error) {
+            PFObject *delObj = [self.entries objectAtIndex:indexPath.row];
+            [delObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                if (!error) {
+                    [delObj saveInBackgroundWithBlock:nil];
+                }
+            }];
+        }
+    }];
+    if (self.entries.count < 1) {
         [self addInfo];
     }
+
 }
+
+#pragma mark FetchedResultsController Delegate Methods
+
+- (NSFetchedResultsController *)fetchedResultsController {
+    if (_fetchedResultsController != nil) {
+        return _fetchedResultsController;
+    }
+    NSFetchRequest *request = [NSFetchRequest new];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:self.moc];
+    [request setEntity:entity];
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"employers" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObject:sort]];
+    [request setFetchBatchSize:31];
+
+    NSFetchedResultsController *fetchedResultsController1 = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.moc sectionNameKeyPath:nil cacheName:@"Root1"];
+    self.fetchedResultsController = fetchedResultsController1;
+    _fetchedResultsController.delegate = self;
+
+    return _fetchedResultsController;
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    UITableView *tableView = self.tipsTableView;
+
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            NSLog(@"Changed");
+            break;
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
+
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [self.tipsTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [self.tipsTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            NSLog(@"Item Updated");
+            break;
+        case NSFetchedResultsChangeMove:
+            NSLog(@"Item Moved");
+            break;
+    }
+
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+
+    [self.tipsTableView endUpdates];
+}
+
 #pragma mark helper methods
 
+- (void)fetchEntryData {
+
+    NSManagedObjectContext *context = self.moc;
+    NSFetchRequest *request = [NSFetchRequest new];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:context];
+    [request setEntity:entity];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"employers" ascending:YES]];
+    self.entryData = [self.moc executeFetchRequest:request error:nil];
+    [self.tipsTableView reloadData];
+}
 
 - (void)addInfo {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Add Tips" message:nil preferredStyle:UIAlertControllerStyleAlert];
@@ -190,15 +265,15 @@
     }];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.keyboardType = UIKeyboardTypeDecimalPad;
-        textField.placeholder = @"percentage for expenses";
+        textField.placeholder = @"percent as decimal for expenses";
     }];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.keyboardType = UIKeyboardTypeDecimalPad;
-        textField.placeholder = @"percentage to save";
+        textField.placeholder = @"percent as decimal for taxes";
     }];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.keyboardType = UIKeyboardTypeDecimalPad;
-        textField.placeholder = @"percentage for taxes";
+        textField.placeholder = @"percent as decimal for savings";
     }];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = @"enter notes";
@@ -212,7 +287,7 @@
         UITextField *newSavings = [[alertController textFields] objectAtIndex:3];
         UITextField *newTaxes = [[alertController textFields] objectAtIndex:4];
         UITextField *notes = [[alertController textFields] lastObject];
-
+        // Convert strings to floats for calcutions to be done accurately
         float sales = [newSales.text floatValue];
         float tips =  [newTips.text floatValue];
         float expenses = [newExpenses.text floatValue];
@@ -223,6 +298,7 @@
         NSString *newSalesString = [NSString stringWithFormat:@"$%.2f", sales];
         NSString *newTipsString = [NSString stringWithFormat:@"$%.2f", tips];
 
+        // Calculations on float values
         float getExpenses = tips * expenses;
         float tipsAfterExpenses = tips - getExpenses;
         float getTaxes = tipsAfterExpenses * taxes;
@@ -230,12 +306,11 @@
         float getSavings = tipsAfterTaxes * savings;
         float finalSpendingCash = tipsAfterTaxes - getSavings;
 
+        // Convert floats back to strings for storing in Parse Server
         NSString *expensesString = [NSString stringWithFormat:@"$%.2f", getExpenses];
         NSString *taxesString = [NSString stringWithFormat:@"$%.2f", getTaxes];
         NSString *savingsString = [NSString stringWithFormat:@"$%.2f", getSavings];
-
         NSString *spendingCashString = [NSString stringWithFormat:@"$%.2f", finalSpendingCash];
-
         NSString *percentage = [NSString stringWithFormat:@"%.2f%%", tips/sales];
         NSDate *date = [NSDate date];
         NSDateFormatter *format = [NSDateFormatter new];
@@ -243,54 +318,100 @@
         [format setDateFormat:@"MMM dd, yyyy"];
         NSString *stringFromDate = [format stringFromDate:date];
 
-        PFUser *currentUser = [PFUser currentUser];
-        NSIndexPath *indexPath = [self.tipsTableView indexPathForSelectedRow];
-        PFObject *employer = [self.currentEmployerName objectAtIndex:indexPath.row];
-        PFObject *entryObject = [PFObject objectWithClassName:@"Entries"];
-        [entryObject setObject:newSalesString forKey:@"totalSales"];
-        [entryObject setObject:newTipsString forKey:@"totalTips"];
-        [entryObject setObject:currentUser.objectId forKey:@"createdBy"];
-        [entryObject setObject:employer.objectId forKey:@"companyId"];
-        [entryObject setObject:notesString forKey:@"notes"];
-        [entryObject setObject:percentage forKey:@"percentEarned"];
-        [entryObject setObject:stringFromDate forKey:@"date"];
-        [entryObject setObject:expensesString forKey:@"expenses"];
-        [entryObject setObject:taxesString forKey:@"taxes"];
-        [entryObject setObject:savingsString forKey:@"savings"];
-        [entryObject setObject:spendingCashString forKey:@"spendingCash"];
+        // store entry data to core data
+//        NSManagedObject *entryObject = [NSEntityDescription insertNewObjectForEntityForName:@"TipEntries" inManagedObjectContext:self.moc];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:self.moc];
+        Entry *newEntry = [[Entry alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
+//        PFObject *entryObject = [PFObject objectWithClassName:@"Entries"];
+//        CKContainer *containerRef = [CKContainer defaultContainer];
+//        CKDatabase *privateDB = [containerRef privateCloudDatabase];
+//        CKRecordID *entryID = [[CKRecordID alloc] initWithRecordName:@"newEntry"];
+//        CKRecord *newEntry = [[CKRecord alloc] initWithRecordType:@"TipsEntries" recordID:entryID];
+        [newEntry setValue:self.employerName forKey:@"employers"];
+        [newEntry setValue:newSalesString forKey:@"totalSales"];
+        [newEntry setValue:newTipsString forKey:@"totalTips"];
+        [newEntry setValue:notesString forKey:@"notes"];
+        [newEntry setValue:percentage forKey:@"percentEarned"];
+        [newEntry setValue:stringFromDate forKey:@"createdAt"];
+        [newEntry setValue:expensesString forKey:@"expenses"];
+        [newEntry setValue:taxesString forKey:@"taxes"];
+        [newEntry setValue:savingsString forKey:@"savings"];
+        [newEntry setValue:spendingCashString forKey:@"spendingCash"];
+//        newEntry[@"companyId"] = self.employerName;
+//        newEntry[@"totalSales"] = newSalesString;
+//        newEntry[@"totalTips"] = newTipsString;
+//        newEntry[@"notes"] = notesString;
+//        newEntry[@"percentEarned"] = percentage;
+//        newEntry[@"createdAt"] = stringFromDate;
+//        newEntry[@"expenses"] = expensesString;
+//        newEntry[@"taxes"] = taxesString;
+//        newEntry[@"savings"] = savingsString;
+//        newEntry[@"spendingCash"] = spendingCashString;
+        [self.moc save:nil];
 
-        NSLog(@"%@, %@", savingsString, notes);
-
-        [entryObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (!error) {
-                [self fetchEntryData];
-            }
-        }];
+//        [privateDB saveRecord:newEntry completionHandler:^(CKRecord * _Nullable record, NSError * _Nullable error) {
+//            if (!error) {
+//                   NSLog(@"%@",record);
+//            } else {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"Cannot save entry data at this time, please try again later" preferredStyle:UIAlertControllerStyleAlert];
+//                    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//                        [self dismissViewControllerAnimated:NO completion:nil];
+//                    }];
+//                    [controller addAction:okAction];
+//                    [self presentViewController:controller animated:YES completion:nil];
+//                });
+//            }
+//        }];
     }];
-
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:addAction];
     [alertController addAction:cancelAction];
-    [self presentViewController:alertController animated:YES completion:nil];}
+    [self presentViewController:alertController animated:YES completion:nil];
+
+    //        if (error) {
+    //            NSLog(@"%@", error);
+    //        }else {
+    //
+    //        }
+    //    }];
+    //
+    //
+    //
+    ////        [entryObject setValue:self.employerName forKey:@"companyId"];
+    ////        [entryObject setValue:newSalesString forKey:@"totalSales"];
+    ////        [entryObject setValue:newTipsString forKey:@"totalTips"];
+    ////        [entryObject setValue:notesString forKey:@"notes"];
+    ////        [entryObject setValue:percentage forKey:@"percentEarned"];
+    ////        [entryObject setValue:stringFromDate forKey:@"date"];
+    ////        [entryObject setValue:expensesString forKey:@"expenses"];
+    ////        [entryObject setValue:taxesString forKey:@"taxes"];
+    ////        [entryObject setValue:savingsString forKey:@"savings"];
+    ////        [entryObject setValue:spendingCashString forKey:@"spendingCash"];
+    ////
+    ////        [self.moc save:nil];
+    ////        [entryObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+}
+
 
 #pragma mark - Navigation
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"detailSegue"]) {
-        DetailViewController *detailsVC = segue.destinationViewController;
-        NSIndexPath *indexPath = [self.tipsTableView indexPathForSelectedRow];
-        PFObject *detailObj = [self.entryObjects objectAtIndex:indexPath.row];
-        UserData *userDataObject = [UserData new];
-        userDataObject.date = [detailObj objectForKey:@"date"];
-        userDataObject.spendingCash = [NSString stringWithFormat:@"Spending Cash:  %@",[detailObj objectForKey:@"spendingCash"] ];
-        userDataObject.sales = [detailObj objectForKey:@"totalSales"];
-        userDataObject.tips = [detailObj objectForKey:@"totalTips"];
-        userDataObject.percent = [detailObj objectForKey:@"percentEarned"];
-        userDataObject.expenses = [detailObj objectForKey:@"expenses"];
-        userDataObject.taxes = [detailObj objectForKey:@"taxes"];
-        userDataObject.savings = [detailObj objectForKey:@"savings"];
-        userDataObject.notes = [detailObj objectForKey:@"notes"];
-        detailsVC.userData = userDataObject;
+//        DetailViewController *detailsVC = segue.destinationViewController;
+//        NSIndexPath *indexPath = [self.tipsTableView indexPathForSelectedRow];
+//        PFObject *detailObj = [self.entries objectAtIndex:indexPath.row];
+//        UserData *userDataObject = [UserData new];
+//        userDataObject.date = [detailObj objectForKey:@"date"];
+//        userDataObject.spendingCash = [NSString stringWithFormat:@"Spending Cash:  %@",[detailObj objectForKey:@"spendingCash"] ];
+//        userDataObject.sales = [detailObj objectForKey:@"totalSales"];
+//        userDataObject.tips = [detailObj objectForKey:@"totalTips"];
+//        userDataObject.percent = [detailObj objectForKey:@"percentEarned"];
+//        userDataObject.expenses = [detailObj objectForKey:@"expenses"];
+//        userDataObject.taxes = [detailObj objectForKey:@"taxes"];
+//        userDataObject.savings = [detailObj objectForKey:@"savings"];
+//        userDataObject.notes = [detailObj objectForKey:@"notes"];
+//        detailsVC.userData = userDataObject;
 
     }
     if ([segue.identifier isEqualToString:@"addInfoSegue"]) {

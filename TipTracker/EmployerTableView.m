@@ -10,15 +10,18 @@
 #import "TipsTableViewController.h"
 #import "InputDataView.h"
 #import "EmployerTableView.h"
-#import "AppDelegate.h"
 #import "LogInViewController.h"
 #import "SignUpViewController.h"
 
-@interface EmployerTableView ()<UITableViewDataSource,UITableViewDelegate>
-@property (strong, nonatomic) NSMutableArray *employerName;
 
 
+@interface EmployerTableView ()<UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
+@property (strong, nonatomic) NSMutableArray<FIRDataSnapshot *> *employerName;
+@property (strong, nonatomic) NSArray *currentEmployer;
+@property (strong, nonatomic) FIRDatabaseReference *empReference;
 @property (weak, nonatomic) IBOutlet UITableView *employerTableView;
+@property (strong, nonatomic) NSFetchedResultsController *fetchController;
+@property (weak, nonatomic) IBOutlet UILabel *employerCell;
 
 
 @end
@@ -29,33 +32,54 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
     self.moc = appDelegate.managedObjectContext;
 
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(retrieveEmployerName) forControlEvents:UIControlEventValueChanged];
+//    self.refreshControl = [UIRefreshControl new];
+//    [self.refreshControl addTarget:self action:@selector(retrieveEmployerName) forControlEvents:UIControlEventValueChanged];
+
+//    self.ref = [[FIRDatabase database] reference];
 
     UIImage *image = [UIImage imageNamed:@"viewImage.png"];
     UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:image];
     self.employerTableView.backgroundView = backgroundImage;
     self.navigationItem.title = @"MyTips";
+    [self retrieveEmployerName];
 
     [self.addEmployer setEnabled:NO];
     [self.navigationController.navigationBar setHidden:NO];
+
+//    FIRUser *user = [FIRAuth auth].currentUser;
+//    if (user) {
+////        [self performSegueWithIdentifier:@"logInSegue" sender:self];
+//    }
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-
-    PFUser *currentUser = [PFUser currentUser];
-    if (currentUser == nil) {
-        [self performSegueWithIdentifier:@"logInSegue" sender:self];
-    }
-    [self.navigationController.navigationBar setHidden:NO];
-      [self.addEmployer setEnabled:NO];
     [self retrieveEmployerName];
 }
+
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//
+////    FIRUser *user = [FIRAuth auth].currentUser;
+////    if (user) {
+//////        [self performSegueWithIdentifier:@"logInSegue" sender:self];
+////    }
+//    [self.navigationController.navigationBar setHidden:NO];
+//    [self.addEmployer setEnabled:NO];
+//
+////    [self retrieveEmployerName];
+////    PFUser *currentUser = [PFUser currentUser];
+////    if (currentUser == nil) {
+////        [self performSegueWithIdentifier:@"logInSegue" sender:self];
+////    }
+////    [self.navigationController.navigationBar setHidden:NO];
+////      [self.addEmployer setEnabled:NO];
+////    [self retrieveEmployerName];
+//}
 
 - (void)deleteCoreData {
     NSFetchRequest *request = [NSFetchRequest new];
@@ -71,40 +95,46 @@
 }
 
 - (void)retrieveEmployerName {
-    PFUser *user = [PFUser currentUser];
-    PFQuery *query = [PFQuery queryWithClassName:@"Employer"];
-    query.cachePolicy = kPFCachePolicyCacheElseNetwork;
-    if (user.objectId == nil) {
-        [self performSegueWithIdentifier:@"logInSegue" sender:self];
-    }else {
-    [query whereKey:@"userId" equalTo:user.objectId];
-        [query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable objects, NSError * _Nullable error) {
-        if (!error) {
-            self.employerName = [NSMutableArray arrayWithObject:objects];
-            [self.employerTableView reloadData];
-        }else  {
-            [self performSegueWithIdentifier:@"logInSegue" sender:self];
-        }
-            [self.refreshControl isRefreshing];
-            [self.refreshControl endRefreshing];
-        }];
+
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Employer"];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:self.moc];
+    Employer *employer = [[Employer alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"employerName = %@", employer.employerName];
+    [fetchRequest setPredicate:predicate];
+    self.currentEmployer = [self.moc executeFetchRequest:fetchRequest error:nil];
+    NSError *error = nil;
+    if (error) {
+        NSLog(@"Unable to fetch data %@", error.localizedDescription);
     }
+
+
+//    NSString *userID = [FIRAuth auth].currentUser.uid;
+//    [[[_ref child:@"Employer"]child:userID] observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+//        self.employerName = snapshot.value;
+//
+//    }];
 }
 
 - (IBAction)logoutTapped:(id)sender {
-    [PFUser logOut];
+
+//    FIRAuth *fbAuth = [FIRAuth auth];
+//    NSError *signOutError;
+//    BOOL status = [fbAuth signOut:&signOutError];
+//    if (!status) {
+//        NSLog(@"Error signing out: %@", signOutError);
+//        return;
+//    }
     [self performSegueWithIdentifier:@"logInSegue" sender:self];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 
-    NSString *currentEmployer = @"Current Employer";
+    NSString *currentEmployer = @"My Current Employer";
     return currentEmployer;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-
-    return self.employerName.count;
+    return 1;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -121,15 +151,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"employerCell"];
-
-    PFUser *currentUser = [PFUser currentUser];
-    cell.textLabel.font = [UIFont fontWithName:@"Iowan Old Style Roman" size:14];
-    cell.textLabel.textColor = [UIColor whiteColor];
-    cell.textLabel.text = [currentUser objectForKey:@"currentEmployer"];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:self.moc];
+    Employer *empName = [[Employer alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
+    empName = [self.currentEmployer objectAtIndex:indexPath.row];
+    cell.textLabel.text = empName.employerName;
 
     return cell;
 }
-
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -137,8 +165,9 @@
         [self.employerName removeObjectAtIndex:indexPath.section];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
+    PFObject *empNameObj = [PFObject objectWithClassName:@"Employer"];
     PFQuery *query = [PFQuery queryWithClassName:@"Entries"];
-    [query whereKey:@"createdBy" equalTo:[[PFUser currentUser] objectId]];
+    [query whereKey:@"companyId" equalTo:empNameObj.objectId];
     [query whereKeyExists:@"companyId"];
     [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if (!error) {
@@ -185,9 +214,42 @@
     [self presentViewController:alertController animated:YES completion:nil];
 
     [self.addEmployer setEnabled:YES];
-    [self deleteCoreData];
+//    [self deleteCoreData];
 
 }
+
+
+#pragma mark - Fetched Results Controller Delegate Methods
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    [self.employerTableView beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+
+    switch (type) {
+        case NSFetchedResultsChangeInsert:
+            [self.employerTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeDelete:
+            [self.employerTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeMove:
+            [self.employerTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.employerTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [self.employerTableView cellForRowAtIndexPath:indexPath];
+        default:
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.employerTableView endUpdates];
+}
+
+
 
 #pragma mark - Navigation
 
