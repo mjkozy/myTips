@@ -7,8 +7,7 @@
 //
 
 
-#import "TipsTableViewController.h"
-#import "InputDataView.h"
+
 #import "EmployerTableView.h"
 #import "LogInViewController.h"
 #import "SignUpViewController.h"
@@ -16,9 +15,8 @@
 
 
 @interface EmployerTableView ()<UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
-@property (strong, nonatomic) NSMutableArray<FIRDataSnapshot *> *employerName;
+
 @property (strong, nonatomic) NSArray *currentEmployer;
-@property (strong, nonatomic) FIRDatabaseReference *empReference;
 @property (weak, nonatomic) IBOutlet UITableView *employerTableView;
 @property (strong, nonatomic) NSFetchedResultsController *fetchController;
 @property (weak, nonatomic) IBOutlet UILabel *employerCell;
@@ -161,60 +159,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.employerName removeObjectAtIndex:indexPath.section];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }
-    PFObject *empNameObj = [PFObject objectWithClassName:@"Employer"];
-    PFQuery *query = [PFQuery queryWithClassName:@"Entries"];
-    [query whereKey:@"companyId" equalTo:empNameObj.objectId];
-    [query whereKeyExists:@"companyId"];
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if (!error) {
-            [PFObject deleteAllInBackground:objects];
-        }if (error) {
-        UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"Cannot retrieve data at this time, please try again later" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
-        [controller addAction:okAction];
-        [self presentViewController:controller animated:YES completion:nil];
-        }
-    }];
-    for (PFObject *emp in self.employerName) {
-        [emp delete];
-        [emp saveInBackgroundWithBlock:nil];
-    }
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"New Employer" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = @"Employer";
-    }];
-    UIAlertAction *addAction = [UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 
-        UITextField *employerName = [[alertController textFields] firstObject];
-        NSString *enteredEmployer = employerName.text;
-
-        PFObject *employerObject = [PFObject objectWithClassName:@"Employer"];
-
-        PFUser *user = [PFUser currentUser];
-        [employerObject setObject:enteredEmployer forKey:@"companyName"];
-        [user setObject:[employerObject objectForKey:@"companyName"] forKey:@"currentEmployer"];
-        [employerObject setObject:user.objectId forKey:@"userId"];
-
-        [employerObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if (error) {
-                UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Error" message:@"Cannot retrieve data at this time, please try again later" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
-                [controller addAction:okAction];
-                [self presentViewController:controller animated:YES completion:nil];
-            }
-        }];
-    }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    [alertController addAction:addAction];
-    [alertController addAction:cancelAction];
-    [self presentViewController:alertController animated:YES completion:nil];
-
-    [self.addEmployer setEnabled:YES];
-//    [self deleteCoreData];
 
 }
 
@@ -264,14 +209,14 @@
 }
 
 - (IBAction)unwindToRoot:(UIStoryboardSegue *)segue {
-     if ([segue.identifier isEqualToString:@"signUpSegue"]) {
-         SignUpViewController *svc;
-         svc = segue.sourceViewController;
-    }
-    if ([segue.identifier isEqualToString:@"logInSegue"]) {
-        LogInViewController *logIn;
-        logIn = (LogInViewController *)segue.sourceViewController;
-    }
+//     if ([segue.identifier isEqualToString:@"signUpSegue"]) {
+//         SignUpViewController *svc;
+//         svc = segue.sourceViewController;
+//    }
+//    if ([segue.identifier isEqualToString:@"logInSegue"]) {
+//        LogInViewController *logIn;
+//        logIn = (LogInViewController *)segue.sourceViewController;
+//    }
  }
 
 

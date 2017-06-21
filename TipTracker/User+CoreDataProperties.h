@@ -2,7 +2,7 @@
 //  User+CoreDataProperties.h
 //  myTips
 //
-//  Created by Michael Kozy on 2/6/17.
+//  Created by Michael Kozy on 6/6/17.
 //  Copyright © 2017 Michael Kozy. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu

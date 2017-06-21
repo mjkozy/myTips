@@ -8,13 +8,11 @@
 
 #import "LogInViewController.h"
 #import "SignUpViewController.h"
-#import "InputDataView.h"
 #import "TipsTableViewController.h"
 
 
 
 @interface TipsTableViewController ()<UITableViewDelegate,UITableViewDataSource, UITextFieldDelegate, NSFetchedResultsControllerDelegate>
-@property (strong, nonatomic) NSMutableArray<FIRDataSnapshot *> *entryObjects;
 @property (strong, nonatomic) NSArray *entryData;
 @property (strong, nonatomic) NSArray *currentEmployerName;
 @property (strong, nonatomic) NSMutableArray *entries;
@@ -106,12 +104,6 @@
     UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 0, 600, 25)];
     headerLabel.textColor = [UIColor whiteColor];
     headerLabel.font = [UIFont fontWithName:@"Iowan Old Style Roman" size:20];
-    NSString *userId = [FIRAuth auth].currentUser.uid;
-    [[[self.firebaseDBRef child:@"Employer"]child:userId] observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-        NSDictionary *employerName = snapshot.value;
-        self.employerName = employerName[@"currentEmployer"];
-        headerLabel.text = self.employerName;
-    }];
 
     [headerView addSubview:headerLabel];
 
@@ -157,17 +149,6 @@
         [self.entries removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
-    PFQuery *query = [PFQuery queryWithClassName:@"Entries"];
-    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-        if (!error) {
-            PFObject *delObj = [self.entries objectAtIndex:indexPath.row];
-            [delObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                if (!error) {
-                    [delObj saveInBackgroundWithBlock:nil];
-                }
-            }];
-        }
-    }];
     if (self.entries.count < 1) {
         [self addInfo];
     }
@@ -415,20 +396,21 @@
 
     }
     if ([segue.identifier isEqualToString:@"addInfoSegue"]) {
-        UINavigationController *inputNav = segue.destinationViewController;
-        InputDataView *inputVC;
-        inputVC = (InputDataView *)inputNav.topViewController;
+//        UINavigationController *inputNav = segue.destinationViewController;
+//        InputDataView *inputVC;
+//        inputVC = (InputDataView *)inputNav.topViewController;
     }
 }
 
 - (IBAction)unwindToMain:(UIStoryboardSegue *)segue {
-    if ([segue.identifier isEqualToString:@"addInfoSegue"]) {
-        InputDataView *inputVC;
-        inputVC = segue.sourceViewController;
-    }if ([segue.identifier isEqualToString:@"signUpSegue"]) {
-        SignUpViewController *signUP;
-        signUP = segue.sourceViewController;
-    }
+//    if ([segue.identifier isEqualToString:@"addInfoSegue"]) {
+//        InputDataView *inputVC;
+//          inputVC = segue.sourceViewController;
+//    }
+//if ([segue.identifier isEqualToString:@"signUpSegue"]) {
+//        SignUpViewController *signUP;
+//        signUP = segue.sourceViewController;
+//    }
 }
 
 

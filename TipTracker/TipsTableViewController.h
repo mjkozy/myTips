@@ -11,14 +11,12 @@
 #import "AppDelegate.h"
 #import "DescriptionCell.h"
 #import "Entry.h"
-#import <Parse/Parse.h>
 #import "DetailViewController.h"
-#import <FirebaseDatabase/FirebaseDatabase.h>
 #import <CloudKit/CloudKit.h>
 #import "Employer.h"
 
 
-@class Entry;
+//@class Entry;
 @class DescriptionCell;
 @interface TipsTableViewController : UITableViewController
 
@@ -27,7 +25,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tipsTableView;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
-@property (strong, nonatomic) FIRDatabaseReference *firebaseDBRef;
+
 
 
 

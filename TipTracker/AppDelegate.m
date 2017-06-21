@@ -8,7 +8,6 @@
 
 #import "EmployerTableView.h"
 #import "AppDelegate.h"
-#import <Parse/Parse.h>
 #import "Constants.h"
 
 
@@ -18,7 +17,7 @@
 
 @end
 
-@import Firebase;
+
 @implementation AppDelegate
 
 
