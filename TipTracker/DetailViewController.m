@@ -20,16 +20,18 @@
     // Do any additional setup after loading the view.
 
     [self setNeedsStatusBarAppearanceUpdate];
-
-//    self.dateLabel.text = _userData.date;
-//    self.spendingCashLabel.text = _userData.spendingCash;
-//    self.salesLabel.text = [NSString stringWithFormat:@"Sales %@", _userData.sales];
-//    self.tipsLabel.text = [NSString stringWithFormat:@"Tips %@", _userData.tips];
-//    self.percentLabel.text = [NSString stringWithFormat:@"Percent of Sales %@", _userData.percent];
-//    self.expensesLabel.text = [NSString stringWithFormat:@"Expenses %@", _userData.expenses];
-//    self.taxesLabel.text = [NSString stringWithFormat: @"Taxes %@", _userData.taxes];
-//    self.savingsLabel.text = [NSString stringWithFormat: @"Savings %@",_userData.savings];
-//    self.notesLabel.text = _userData.notes;
+    
+    self.title = [self.getRecord objectForKey:@"employer"];
+    self.dateLabel.text = [self.getRecord objectForKey:@"dateEntered"];
+    self.currentEmployerLabel.text = [self.getRecord objectForKey:@"empName"];
+    self.spendingCashLabel.text = [NSString stringWithFormat:@"Spending Cash: %@",[self.getRecord objectForKey:@"spendingCash"]];
+    self.salesLabel.text = [NSString stringWithFormat:@"Total Sales: %@",[self.getRecord objectForKey:@"totalSales"]];
+    self.tipsLabel.text = [NSString stringWithFormat:@"Total Tips: %@",[self.getRecord objectForKey:@"totalTips"]];
+    self.percentLabel.text = [NSString stringWithFormat:@"You earned %@ of sales",[self.getRecord objectForKey:@"percentEarned"]];
+    self.expensesLabel.text = [NSString stringWithFormat:@"Set aside %@ for bills",[self.getRecord objectForKey:@"expenses"]];
+    self.taxesLabel.text = [NSString stringWithFormat:@"Set aside %@ for taxes",[self.getRecord objectForKey:@"taxes"]];
+    self.savingsLabel.text = [NSString stringWithFormat:@"Set aside %@ for savings",[self.getRecord objectForKey:@"savings"]];
+    self.notesLabel.text = [self.getRecord objectForKey:@"notes"];
 
     UISwipeGestureRecognizer *swipeToClose = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
     [swipeToClose setDirection:(UISwipeGestureRecognizerDirectionDown)];

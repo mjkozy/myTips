@@ -8,12 +8,12 @@
 
 
 #import <UIKit/UIKit.h>
-#import "AppDelegate.h"
+//#import "AppDelegate.h"
 #import "DescriptionCell.h"
-#import "Entry.h"
+//#import "Entry.h"
 #import "DetailViewController.h"
 #import <CloudKit/CloudKit.h>
-#import "Employer.h"
+//#import "Employer.h"
 
 
 //@class Entry;
@@ -21,7 +21,7 @@
 @interface TipsTableViewController : UITableViewController
 
 @property DescriptionCell *cell;
-
+@property (strong, nonatomic) CKRecord *recievedRecord;
 @property (weak, nonatomic) IBOutlet UITableView *tipsTableView;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;

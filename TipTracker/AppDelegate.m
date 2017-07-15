@@ -11,7 +11,6 @@
 #import "Constants.h"
 
 
-
 @interface AppDelegate ()
 
 
@@ -24,27 +23,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
 
-//    [FIRApp configure];
-//
-//    ParseClientConfiguration *config = [ParseClientConfiguration configurationWithBlock:^(id<ParseMutableClientConfiguration>  _Nonnull configuration) {
-//
-//        configuration.clientKey = cLIentKey;
-//        configuration.applicationId = aPPlicationID;
-//        configuration.server = cONfigServer;
-//    }];
-//    [Parse initializeWithConfiguration:config];
-
-//    PFObject *object = [PFObject objectWithClassName:@"Foo"];
-//    object[@"foo"]= @"bar";
-//    [object save];
-//    NSLog(@"%@", object);
-//    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-//    UINavigationController *navController = tabBarController.viewControllers[0];
-//    EmployerTableView *evc = (EmployerTableView *)navController.topViewController;
-//    evc.moc = self.managedObjectContext;
-
 
     [self setNavigationBarAppearance];
+
     return YES;
 }
 

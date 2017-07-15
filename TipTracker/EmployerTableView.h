@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AppDelegate.h"
-#import <CoreData/CoreData.h>
-#import "Employer.h"
+//#import "AppDelegate.h"
+//#import <CoreData/CoreData.h>
+//#import "Employer.h"
 #import "TipsTableViewController.h"
 
 @interface EmployerTableView : UITableViewController
