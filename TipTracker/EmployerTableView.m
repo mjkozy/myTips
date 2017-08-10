@@ -2,23 +2,22 @@
 //  EmployerTableView.m
 //  TipTracker
 //
-//  Created by Michael Kozy on 4/22/16.
-//  Copyright © 2016 Michael Kozy. All rights reserved.
+//  Created by Michael Kozy on 8/9/17.
+//  Copyright © 2017 Michael Kozy. All rights reserved..
 //
 
 
 
 #import "EmployerTableView.h"
-#import "LogInViewController.h"
-#import "SignUpViewController.h"
 
 
 
 @interface EmployerTableView ()<UITableViewDataSource,UITableViewDelegate>
 
-@property (strong, nonatomic) NSArray *currentEmployer;
+@property (strong, nonatomic) NSArray *myEmployer;
 @property (weak, nonatomic) IBOutlet UITableView *employerTableView;
-//@property (strong, nonatomic) NSFetchedResultsController *fetchController;
+@property (strong, nonatomic) NSFetchedResultsController *fetchController;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
 
 
 @end
@@ -29,23 +28,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [[CKContainer defaultContainer] accountStatusWithCompletionHandler:^(CKAccountStatus accountStatus, NSError * _Nullable error) {
-        if (accountStatus == CKAccountStatusNoAccount) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Sign into iCloud" message:@"Sign into iCloud to add customer data. On the home screen, launch settings, tap iCloud, and enter our Apple ID. Turn on iCloud Drive. If you do not have an iCloud account, tap Create a new Apple ID." preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil]];
-            [self presentViewController:alert animated:YES completion:nil];
-        }
-    }];
 
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    self.moc = delegate.managedObjectContext;
+ 
+    [self retrieveEmployerName];
     self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(retrieveEmployerName) forControlEvents:UIControlEventValueChanged];
 
     UIImage *image = [UIImage imageNamed:@"viewImage.png"];
     UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:image];
     self.employerTableView.backgroundView = backgroundImage;
     self.navigationItem.title = @"MyTips";
-    
 
     [self.navigationController.navigationBar setHidden:NO];
 
@@ -53,32 +47,12 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self loadData];
+    [self retrieveEmployerName];
 }
 
-- (void)loadData {
-    CKDatabase *privateDB = [[CKContainer defaultContainer] privateCloudDatabase];
-    NSPredicate *pred = [NSPredicate predicateWithValue:TRUE];
-    CKQuery *query = [[CKQuery alloc] initWithRecordType:@"Employer" predicate:pred];
-    [privateDB performQuery:query inZoneWithID:nil completionHandler:^(NSArray<CKRecord *> * _Nullable results, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"Error: %@", error.userInfo);
-        }else {
-            dispatch_async(dispatch_get_main_queue(),^{
-                 self.currentEmployer = results;
-                CKRecord *checkEmp = [self.currentEmployer objectAtIndex:0];
-                if (checkEmp[@"employer"]) {
-                    [self.addEmployer setEnabled:NO];
-                }else{
-                    [self.addEmployer setEnabled:YES];
-                }
-                [self.tableView reloadData];
-            });
-        }
-        if ([self.refreshControl isRefreshing]) {
-            [self.refreshControl endRefreshing];
-        }
-    }];
+- (void)setCurrentEmployer:(NSMutableArray *)myEmployer {
+    _myEmployer = myEmployer;
+    [self.tableView reloadData];
 }
 
 
@@ -92,88 +66,33 @@
         UITextField *empName = [[addEmployer textFields]firstObject];
         
         NSString *emp = empName.text;
-        CKRecordID *empID = [[CKRecordID alloc] initWithRecordName:@"currentEmployerName"];
-        CKRecord *empRecord = [[CKRecord alloc] initWithRecordType:@"Employer" recordID:empID];
-        empRecord[@"employer"] = emp;
-        
-        CKContainer *container = [CKContainer defaultContainer];
-        CKDatabase *myDB = [container privateCloudDatabase];
-        [myDB saveRecord:empRecord completionHandler:^(CKRecord * _Nullable record, NSError * _Nullable error) {
-                if (error) {
-                    NSLog(@"Error: %@", error.localizedDescription);
-                }else{
-                    [self.tableView reloadData];
-                }
-            }];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:self.moc];
+        NSManagedObject *employer = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
+        [employer setValue:emp forKey:@"employerName"];
+        [self.moc save:nil];
+        [self.addEmployer setEnabled:NO];
+        [self.tableView reloadData];
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
     [addEmployer addAction:okay];
     [self presentViewController:addEmployer animated:YES completion:nil];
 }
 
-//- (void)viewDidAppear:(BOOL)animated {
-//    [super viewDidAppear:animated];
-//
-////    FIRUser *user = [FIRAuth auth].currentUser;
-////    if (user) {
-//////        [self performSegueWithIdentifier:@"logInSegue" sender:self];
-////    }
-//    [self.navigationController.navigationBar setHidden:NO];
-//    [self.addEmployer setEnabled:NO];
-//
-////    [self retrieveEmployerName];
-////    PFUser *currentUser = [PFUser currentUser];
-////    if (currentUser == nil) {
-////        [self performSegueWithIdentifier:@"logInSegue" sender:self];
-////    }
-////    [self.navigationController.navigationBar setHidden:NO];
-////      [self.addEmployer setEnabled:NO];
-////    [self retrieveEmployerName];
-//}
+- (void)retrieveEmployerName {
 
-//- (void)deleteCoreData {
-//    NSFetchRequest *request = [NSFetchRequest new];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:self.moc];
-//    [request setEntity:entity];
-//    NSSortDescriptor *tipDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"totalTips" ascending:NO];
-//    request.sortDescriptors = @[tipDescriptor];
-//    NSArray *deleteCD = [self.moc executeFetchRequest:request error:nil];
-//    for (Entry *deleteAll in deleteCD) {
-//        [self.moc deleteObject:deleteAll];
-//        [self.employerTableView reloadData];
-//    }
-//}
-
-//- (void)retrieveEmployerName {
-//
-//    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Employer"];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:self.moc];
-//    Employer *employer = [[Employer alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
-//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"employerName = %@", employer.employerName];
-//    [fetchRequest setPredicate:predicate];
-//    self.currentEmployer = [self.moc executeFetchRequest:fetchRequest error:nil];
-//    NSError *error = nil;
-//    if (error) {
-//        NSLog(@"Unable to fetch data %@", error.localizedDescription);
-//    }
-//
-//
-////    NSString *userID = [FIRAuth auth].currentUser.uid;
-////    [[[_ref child:@"Employer"]child:userID] observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-////        self.employerName = snapshot.value;
-////
-////    }];
-//}
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Employer" ];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"employerName" ascending:YES];
+    fetchRequest.sortDescriptors = @[sortDescriptor];
+    self.myEmployer = [self.moc executeFetchRequest:fetchRequest error:nil];
+    
+    if ([self.refreshControl isRefreshing]) {
+        [self.refreshControl endRefreshing];
+    }
+    [self.tableView reloadData];
+}
 
 - (IBAction)logoutTapped:(id)sender {
 
-//    FIRAuth *fbAuth = [FIRAuth auth];
-//    NSError *signOutError;
-//    BOOL status = [fbAuth signOut:&signOutError];
-//    if (!status) {
-//        NSLog(@"Error signing out: %@", signOutError);
-//        return;
-//    }
     [self performSegueWithIdentifier:@"logInSegue" sender:self];
 }
 
@@ -183,8 +102,9 @@
     return currentEmployer;
 }
 
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.currentEmployer.count;
+    return self.myEmployer.count;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -201,55 +121,30 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"employerCell"];
-    CKRecord *record = [self.currentEmployer objectAtIndex:indexPath.row];
-    cell.textLabel.text = [record objectForKey:@"employer"];
+    
+    Employer *employer = [self.myEmployer objectAtIndex:indexPath.row];
+//    NSManagedObject *employer = [self.myEmployer objectAtIndex:indexPath.row];
+    cell.textLabel.text = [employer valueForKey:@"employerName"];
 
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
-        UIAlertController *alertNotice = [UIAlertController alertControllerWithTitle:@"Unable to Delete in Beta Testing Mode" message:nil preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okay = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil];
-        [alertNotice addAction:okay];
-        [self presentViewController:alertNotice animated:YES completion:nil];
-    }
-    [self.employerTableView reloadData];
-
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
 }
 
-
-//#pragma mark - Fetched Results Controller Delegate Methods
-//
-//- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-//    [self.employerTableView beginUpdates];
-//}
-//
-//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-//
-//    switch (type) {
-//        case NSFetchedResultsChangeInsert:
-//            [self.employerTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeDelete:
-//            [self.employerTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeMove:
-//            [self.employerTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            [self.employerTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeUpdate:
-//            [self.employerTableView cellForRowAtIndexPath:indexPath];
-//        default:
-//            break;
-//    }
-//}
-//
-//- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-//    [self.employerTableView endUpdates];
-//}
-//
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+       
+        NSManagedObject *deleteObject = [self.myEmployer objectAtIndex:indexPath.row];
+        [self.moc deleteObject:deleteObject];
+        [self.moc save:nil];
+    }
+      [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    [self.addEmployer setEnabled:YES];
+    [self.tableView reloadData];
+}
 
 
 #pragma mark - Navigation
@@ -258,7 +153,7 @@
     if ([segue.identifier isEqualToString:@"tipsSegue"]) {
         TipsTableViewController *tipsVC = segue.destinationViewController;
         NSIndexPath *indexPath = [self.employerTableView indexPathForSelectedRow];
-        CKRecord *passedRecord = [self.currentEmployer objectAtIndex:indexPath.row];
+        Employer *passedRecord = [self.myEmployer objectAtIndex:indexPath.row];
         tipsVC.recievedRecord = passedRecord;
         NSLog(@"%@", tipsVC.recievedRecord);
     }

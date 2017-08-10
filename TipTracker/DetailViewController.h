@@ -2,16 +2,19 @@
 //  DetailViewController.h
 //  myTips
 //
-//  Created by Michael Kozy on 12/6/16.
-//  Copyright © 2016 Michael Kozy. All rights reserved.
+//  Created by Michael Kozy on 8/9/17.
+//  Copyright © 2017 Michael Kozy. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "TipsTableViewController.h"
 #import <CloudKit/CloudKit.h>
+#import "Entry+CoreDataClass.h"
 
 @interface DetailViewController : UIViewController
 
-@property (strong, nonatomic) CKRecord *getRecord;
+
+@property (strong, nonatomic) Entry *getRecord;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *spendingCashLabel;
 @property (weak, nonatomic) IBOutlet UILabel *salesLabel;

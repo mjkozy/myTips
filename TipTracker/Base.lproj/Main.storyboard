@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Dou-EI-1bI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Dou-EI-1bI">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -49,10 +49,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <activityIndicatorView key="tableFooterView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" id="Cxi-UA-UIY">
-                            <rect key="frame" x="0.0" y="118" width="375" height="37"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        </activityIndicatorView>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="descriptionCell" rowHeight="90" id="1Do-SE-09p" customClass="DescriptionCell">
                                 <rect key="frame" x="0.0" y="28" width="375" height="90"/>
@@ -132,6 +128,7 @@
                             <outlet property="delegate" destination="I9N-7r-2em" id="g50-rk-69E"/>
                         </connections>
                     </tableView>
+                    <tabBarItem key="tabBarItem" title="" image="tipsHome" id="g0p-Vm-Zhy"/>
                     <navigationItem key="navigationItem" id="Xy9-fe-Rjt">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="qIO-Zf-kRv">
                             <connections>
@@ -141,7 +138,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addEntryButton" destination="qIO-Zf-kRv" id="yo0-Hb-e7w"/>
-                        <outlet property="spinner" destination="Cxi-UA-UIY" id="D2h-f8-ZZ9"/>
                         <outlet property="tipsTableView" destination="sWs-W0-j66" id="Ge2-wh-O31"/>
                     </connections>
                 </tableViewController>
@@ -258,7 +254,7 @@
                                 <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8KS-ZG-jVO">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8KS-ZG-jVO">
                                 <rect key="frame" x="55" y="88" width="279" height="34"/>
                                 <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="20"/>
                                 <nil key="textColor"/>
@@ -321,7 +317,7 @@
             </objects>
             <point key="canvasLocation" x="44" y="-48"/>
         </scene>
-        <!--Employer Table View-->
+        <!--Employer-->
         <scene sceneID="CoO-mD-JPa">
             <objects>
                 <tableViewController id="zkQ-aY-cfe" customClass="EmployerTableView" sceneMemberID="viewController">
@@ -331,10 +327,10 @@
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="employerCell" textLabel="Lj0-cV-8ns" rowHeight="30" style="IBUITableViewCellStyleDefault" id="akT-cz-f99">
-                                <rect key="frame" x="0.0" y="55.5" width="375" height="30"/>
+                                <rect key="frame" x="0.0" y="56" width="375" height="30"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="akT-cz-f99" id="oJ3-Eb-rss">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="29.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="29"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Lj0-cV-8ns">
@@ -359,6 +355,7 @@
                             <outlet property="delegate" destination="zkQ-aY-cfe" id="FZT-RD-xkm"/>
                         </connections>
                     </tableView>
+                    <tabBarItem key="tabBarItem" title="Employer" image="tipsIcon.png" id="CwG-n0-ohE"/>
                     <navigationItem key="navigationItem" id="Y8l-wL-T6c">
                         <rightBarButtonItems>
                             <barButtonItem systemItem="add" id="Lkz-D0-gJc">
@@ -378,11 +375,11 @@
             </objects>
             <point key="canvasLocation" x="-1342" y="-48"/>
         </scene>
-        <!--Employer-->
+        <!--Navigation Controller-->
         <scene sceneID="vwo-nJ-CRM">
             <objects>
                 <navigationController storyboardIdentifier="rootNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="ShI-CD-Ppx" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Employer" image="tipsIcon.png" id="0sn-b5-Pvh"/>
+                    <tabBarItem key="tabBarItem" title="" image="tipsHome" id="0sn-b5-Pvh"/>
                     <toolbarItems/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
@@ -401,6 +398,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="tipsHome" width="40" height="40"/>
         <image name="tipsIcon.png" width="16" height="30"/>
         <image name="whitePaper" width="1591" height="1942"/>
     </resources>

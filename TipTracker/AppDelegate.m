@@ -2,8 +2,8 @@
 //  AppDelegate.m
 //  TipTracker
 //
-//  Created by Michael Kozy on 1/31/16.
-//  Copyright © 2016 Michael Kozy. All rights reserved.
+//  Created by Michael Kozy on 08/9/17.
+//  Copyright © 2017 Michael Kozy. All rights reserved.
 //
 
 #import "EmployerTableView.h"
@@ -22,7 +22,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-
+    
+//    [[CKContainer defaultContainer] accountStatusWithCompletionHandler:^(CKAccountStatus accountStatus, NSError * _Nullable error) {
+//        if (accountStatus == CKAccountStatusNoAccount) {
+//            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Sign into iCloud" message:@"Sign into iCloud to add customer data. On the home screen, launch settings, tap iCloud, and enter our Apple ID. Turn on iCloud Drive. If you do not have an iCloud account, tap Create a new Apple ID." preferredStyle:UIAlertControllerStyleAlert];
+//            [alert addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:nil]];
+//            [self presentViewController:alert animated:YES completion:nil];
+//        }
+//    }];
 
     [self setNavigationBarAppearance];
 

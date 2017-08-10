@@ -2,21 +2,19 @@
 //  TipsViewController.m
 //  TipTracker
 //
-//  Created by Michael Kozy on 3/2/16.
-//  Copyright © 2016 Michael Kozy. All rights reserved.
+//  Created by Michael Kozy on 8/9/17.
+//  Copyright © 2017 Michael Kozy. All rights reserved.
 //
 
-#import "LogInViewController.h"
-#import "SignUpViewController.h"
+
 #import "TipsTableViewController.h"
 
-@interface TipsTableViewController ()<UITableViewDelegate,UITableViewDataSource, UITextFieldDelegate>
+@interface TipsTableViewController ()<UITableViewDelegate,UITableViewDataSource, UITextFieldDelegate, NSFetchedResultsControllerDelegate>
 @property (strong, nonatomic) NSArray *entryData;
 @property (strong, nonatomic) NSArray *currentEmployerName;
-@property (strong, nonatomic) NSMutableArray *entries;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addEntryButton;
-//@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *moc;
 @property (strong, nonatomic) NSString *employerName;
 
@@ -30,9 +28,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-//    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-//    self.moc = appDelegate.managedObjectContext;
+   //Get instance of App Delegate and Managed Object Context
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    self.moc = appDelegate.managedObjectContext;
     
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
@@ -45,50 +43,37 @@
     self.tipsTableView.backgroundColor = [UIColor grayColor];
 
     [self.navigationItem setTitle:@"Overview"];
-
-    [self.spinner setHidesWhenStopped:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self loadData];
-
 }
+
+- (void)setEntryData:(NSMutableArray *)entryData{
+    _entryData = entryData;
+    [self.tableView reloadData];
+}
+
 - (void)loadData {
-    CKDatabase *myDB = [[CKContainer defaultContainer] privateCloudDatabase];
-    NSPredicate *pred = [NSPredicate predicateWithValue:TRUE];
     
-    CKQuery *query = [[CKQuery alloc] initWithRecordType:@"TipEntries" predicate:pred];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Entry" ];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
+    fetchRequest.sortDescriptors = @[sortDescriptor];
+    self.entryData = [self.moc executeFetchRequest:fetchRequest error:nil];
     
-    [myDB performQuery:query inZoneWithID:nil completionHandler:^(NSArray<CKRecord *> * _Nullable results, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"Error: %@", error.localizedDescription);
-        }else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.entryData = results;
-                [self.tableView reloadData];
-            });
-        }
-        if ([self.refreshControl isRefreshing]) {
-            [self.refreshControl endRefreshing];
-        }
-    }];
+    if ([self.refreshControl isRefreshing]) {
+        [self.refreshControl endRefreshing];
+    }
+    [self.tableView reloadData];
 }
 
 - (void)getEmployerName {
-    CKDatabase *empDB = [[CKContainer defaultContainer] privateCloudDatabase];
-    NSPredicate *predicate = [NSPredicate predicateWithValue:TRUE];
-    CKQuery *query = [[CKQuery alloc] initWithRecordType:@"Employer" predicate:predicate];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Employer"];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"employerName" ascending:YES];
+    fetchRequest.sortDescriptors = @[sortDescriptor];
+    self.entryData = [self.moc executeFetchRequest:fetchRequest error:nil];
     
-    [empDB performQuery:query inZoneWithID:nil completionHandler:^(NSArray<CKRecord *> * _Nullable results, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"Error: %@", error.localizedDescription);
-        }else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.currentEmployerName = results;
-            });
-        }
-    }];
 }
 
 - (IBAction)didTapAddEntryButton:(id)sender {
@@ -121,13 +106,11 @@
     DescriptionCell *cell = (DescriptionCell *)[tableView dequeueReusableCellWithIdentifier:@"descriptionCell"];
     cell.backgroundColor = [UIColor clearColor];
 
-    CKRecord *requestRecords = [self.entryData objectAtIndex:indexPath.row];
-
-//    NSManagedObjectContext *moc = self.moc;
-//    NSEntityDescription *requestRecords = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:moc];
-            cell.dateLabel.text = [requestRecords objectForKey:@"dateEntered"];
-            cell.salesAmountLabel.text = [requestRecords objectForKey:@"totalSales"];
-            cell.tipsAmountLabel.text = [requestRecords objectForKey:@"totalTips"];
+//    CKRecord *requestRecords = [self.entryData objectAtIndex:indexPath.row];
+    Entry *requestRecords = [self.entryData objectAtIndex:indexPath.row];
+            cell.dateLabel.text = [requestRecords valueForKey:@"createdAt"];
+            cell.salesAmountLabel.text = [requestRecords valueForKey:@"totalSales"];
+            cell.tipsAmountLabel.text = [requestRecords valueForKey:@"totalTips"];
 
     return cell;
 }
@@ -146,83 +129,18 @@
     [self.tipsTableView reloadData];
 }
 
-//#pragma mark FetchedResultsController Delegate Methods
-//
-//- (NSFetchedResultsController *)fetchedResultsController {
-//    if (_fetchedResultsController != nil) {
-//        return _fetchedResultsController;
-//    }
-//    NSFetchRequest *request = [NSFetchRequest new];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:self.moc];
-//    [request setEntity:entity];
-//    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"employers" ascending:YES];
-//    [request setSortDescriptors:[NSArray arrayWithObject:sort]];
-//    [request setFetchBatchSize:31];
-//
-//    NSFetchedResultsController *fetchedResultsController1 = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.moc sectionNameKeyPath:nil cacheName:@"Root1"];
-//    self.fetchedResultsController = fetchedResultsController1;
-//    _fetchedResultsController.delegate = self;
-//
-//    return _fetchedResultsController;
-//}
-//
-//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
-//    UITableView *tableView = self.tipsTableView;
-//
-//    switch (type) {
-//        case NSFetchedResultsChangeInsert:
-//            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeMove:
-//            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeUpdate:
-//            NSLog(@"Changed");
-//            break;
-//        case NSFetchedResultsChangeDelete:
-//            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//    }
-//
-//}
-//
-//- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-//
-//    switch (type) {
-//        case NSFetchedResultsChangeInsert:
-//            [self.tipsTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeDelete:
-//            [self.tipsTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//        case NSFetchedResultsChangeUpdate:
-//            NSLog(@"Item Updated");
-//            break;
-//        case NSFetchedResultsChangeMove:
-//            NSLog(@"Item Moved");
-//            break;
-//    }
-//
-//}
-//
-//- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-//
-//    [self.tipsTableView endUpdates];
-//}
-//
-//#pragma mark helper methods
-//
-//- (void)fetchEntryData {
-//
-//    NSManagedObjectContext *context = self.moc;
-//    NSFetchRequest *request = [NSFetchRequest new];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:context];
-//    [request setEntity:entity];
-//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"employers" ascending:YES]];
-//    self.entryData = [self.moc executeFetchRequest:request error:nil];
-//    [self.tipsTableView reloadData];
-//}
+#pragma mark helper methods
+
+- (void)fetchEntryData {
+
+    NSManagedObjectContext *context = self.moc;
+    NSFetchRequest *request = [NSFetchRequest new];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:context];
+    [request setEntity:entity];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"employers" ascending:YES]];
+    self.entryData = [self.moc executeFetchRequest:request error:nil];
+    [self.tipsTableView reloadData];
+}
 
 - (void)addInfo {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Add Tips" message:nil preferredStyle:UIAlertControllerStyleAlert];
@@ -293,35 +211,25 @@
 
         // Store entry data to icloud
         self.recievedRecord = [self.currentEmployerName objectAtIndex:0];
-        CKRecordID *entryID = [[CKRecordID alloc] initWithRecordName:newSalesString];
-        CKRecordID *empID = [[CKRecordID alloc] initWithRecordName:[self.recievedRecord objectForKey:@"employer"]];
-        CKRecord *newEntry = [[CKRecord alloc] initWithRecordType:@"TipEntries" recordID:entryID];
-        CKRecord *newEmp = [[CKRecord alloc] initWithRecordType:@"Employer" recordID:empID];
-        newEmp[@"entries"] = [[CKReference alloc] initWithRecord:newEntry action:CKReferenceActionNone];
-        newEntry[@"currentEmployer"] = [[CKReference alloc] initWithRecord:newEmp action:CKReferenceActionNone];
-        newEntry[@"empName"] = [self.recievedRecord objectForKey:@"employer"];
-        newEntry[@"totalSales"] = newSalesString;
-        newEntry[@"totalTips"] = newTipsString;
-        newEntry[@"notes"] = notesString;
-        newEntry[@"percentEarned"] = percentage;
-        newEntry[@"dateEntered"] = stringFromDate;
-        newEntry[@"expenses"] = expensesString;
-        newEntry[@"taxes"] = taxesString;
-        newEntry[@"savings"] = savingsString;
-        newEntry[@"spendingCash"] = spendingCashString;
 
-                CKContainer *container = [CKContainer defaultContainer];
-                CKDatabase *privateDB = [container privateCloudDatabase];
-                [privateDB saveRecord:newEntry completionHandler:^(CKRecord * _Nullable record, NSError * _Nullable error) {
-                    if (error) {
-                        NSLog(@"Error: %@", error.localizedDescription);
-                    }else {
-                        [privateDB saveRecord:newEntry completionHandler:^(CKRecord * _Nullable record, NSError * _Nullable error) {
-                            NSLog(@"Employed by: %@, current entries saved are: %@", newEmp, newEntry);
-                        }];
-                    }
-                }];
-            [self dismissViewControllerAnimated:YES completion:nil];
+        // Create New Record
+        NSEntityDescription *enteredInfo = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:self.moc];
+        NSManagedObject *newEntry = [[NSManagedObject alloc] initWithEntity:enteredInfo insertIntoManagedObjectContext:self.moc];
+        //set values of new record
+        [newEntry setValue:newSalesString forKey:@"totalSales"];
+        [newEntry setValue:newTipsString forKey:@"totalTips"];
+        [newEntry setValue:notesString forKey:@"notes"];
+        [newEntry setValue:percentage forKey:@"percentEarned"];
+        [newEntry setValue:stringFromDate forKey:@"createdAt"];
+        [newEntry setValue:expensesString forKey:@"expenses"];
+        [newEntry setValue:taxesString forKey:@"taxes"];
+        [newEntry setValue:savingsString forKey:@"savings"];
+        [newEntry setValue:spendingCashString forKey:@"spendingCash"];
+        [newEntry setValue:[self.recievedRecord valueForKey:@"employerName"] forKey:@"employer"];
+        //Save Managed Object Context
+        [self.moc save:nil];
+        NSLog(@"%@", [newEntry valueForKey:@"employer"]);
+        [self dismissViewControllerAnimated:YES completion:nil];
     }];
     [alertController addAction:addAction];
     [alertController addAction:cancelAction];
@@ -330,25 +238,15 @@
 
 
 #pragma mark - Navigation
-// In a storyboard-based application, you will often want to do a little preparation before navigation
+    //Pass created record to detail view controller
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
     if ([segue.identifier isEqualToString:@"detailSegue"]) {
         DetailViewController *detailsVC = segue.destinationViewController;
         NSIndexPath *indexPath = [self.tipsTableView indexPathForSelectedRow];
-        CKRecord *sendRecord = [self.entryData objectAtIndex:indexPath.row];
+        Entry *sendRecord = [self.entryData objectAtIndex:indexPath.row];
         detailsVC.getRecord = sendRecord;
     }
-}
-
-- (IBAction)unwindToMain:(UIStoryboardSegue *)segue {
-//    if ([segue.identifier isEqualToString:@"addInfoSegue"]) {
-//        InputDataView *inputVC;
-//          inputVC = segue.sourceViewController;
-//    }
-//if ([segue.identifier isEqualToString:@"signUpSegue"]) {
-//        SignUpViewController *signUP;
-//        signUP = segue.sourceViewController;
-//    }
 }
 
 

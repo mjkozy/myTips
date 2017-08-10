@@ -2,8 +2,8 @@
 //  AppDelegate.h
 //  TipTracker
 //
-//  Created by Michael Kozy on 1/31/16.
-//  Copyright © 2016 Michael Kozy. All rights reserved.
+//  Created by Michael Kozy on 08/9/17.
+//  Copyright © 2017 Michael Kozy. All rights reserved.
 //
 
 

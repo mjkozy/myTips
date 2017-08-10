@@ -2,8 +2,8 @@
 //  DetailViewController.m
 //  myTips
 //
-//  Created by Michael Kozy on 12/6/16.
-//  Copyright © 2016 Michael Kozy. All rights reserved.
+//  Created by Michael Kozy on 8/9/17.
+//  Copyright © 2017 Michael Kozy. All rights reserved.
 //
 
 #import "DetailViewController.h"
@@ -21,17 +21,16 @@
 
     [self setNeedsStatusBarAppearanceUpdate];
     
-    self.title = [self.getRecord objectForKey:@"employer"];
-    self.dateLabel.text = [self.getRecord objectForKey:@"dateEntered"];
-    self.currentEmployerLabel.text = [self.getRecord objectForKey:@"empName"];
-    self.spendingCashLabel.text = [NSString stringWithFormat:@"Spending Cash: %@",[self.getRecord objectForKey:@"spendingCash"]];
-    self.salesLabel.text = [NSString stringWithFormat:@"Total Sales: %@",[self.getRecord objectForKey:@"totalSales"]];
-    self.tipsLabel.text = [NSString stringWithFormat:@"Total Tips: %@",[self.getRecord objectForKey:@"totalTips"]];
-    self.percentLabel.text = [NSString stringWithFormat:@"You earned %@ of sales",[self.getRecord objectForKey:@"percentEarned"]];
-    self.expensesLabel.text = [NSString stringWithFormat:@"Set aside %@ for bills",[self.getRecord objectForKey:@"expenses"]];
-    self.taxesLabel.text = [NSString stringWithFormat:@"Set aside %@ for taxes",[self.getRecord objectForKey:@"taxes"]];
-    self.savingsLabel.text = [NSString stringWithFormat:@"Set aside %@ for savings",[self.getRecord objectForKey:@"savings"]];
-    self.notesLabel.text = [self.getRecord objectForKey:@"notes"];
+    self.dateLabel.text = [self.getRecord valueForKey:@"createdAt"];
+    self.currentEmployerLabel.text = [self.getRecord valueForKey:@"employer"];
+    self.spendingCashLabel.text = [NSString stringWithFormat:@"Spending Cash: %@",[self.getRecord valueForKey:@"spendingCash"]];
+    self.salesLabel.text = [NSString stringWithFormat:@"Total Sales: %@",[self.getRecord valueForKey:@"totalSales"]];
+    self.tipsLabel.text = [NSString stringWithFormat:@"Total Tips: %@",[self.getRecord valueForKey:@"totalTips"]];
+    self.percentLabel.text = [NSString stringWithFormat:@"You earned %@ of sales",[self.getRecord valueForKey:@"percentEarned"]];
+    self.expensesLabel.text = [NSString stringWithFormat:@"Set aside %@ for bills",[self.getRecord valueForKey:@"expenses"]];
+    self.taxesLabel.text = [NSString stringWithFormat:@"Set aside %@ for taxes",[self.getRecord valueForKey:@"taxes"]];
+    self.savingsLabel.text = [NSString stringWithFormat:@"Set aside %@ for savings",[self.getRecord valueForKey:@"savings"]];
+    self.notesLabel.text = [self.getRecord valueForKey:@"notes"];
 
     UISwipeGestureRecognizer *swipeToClose = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(close)];
     [swipeToClose setDirection:(UISwipeGestureRecognizerDirectionDown)];
@@ -48,16 +47,5 @@
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
