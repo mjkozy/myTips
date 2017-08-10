@@ -154,21 +154,12 @@
         TipsTableViewController *tipsVC = segue.destinationViewController;
         NSIndexPath *indexPath = [self.employerTableView indexPathForSelectedRow];
         Employer *passedRecord = [self.myEmployer objectAtIndex:indexPath.row];
-        tipsVC.recievedRecord = passedRecord;
-        NSLog(@"%@", tipsVC.recievedRecord);
+        tipsVC.empName = passedRecord.employerName;
+      
     }
 }
 
-- (IBAction)unwindToRoot:(UIStoryboardSegue *)segue {
-//     if ([segue.identifier isEqualToString:@"signUpSegue"]) {
-//         SignUpViewController *svc;
-//         svc = segue.sourceViewController;
-//    }
-//    if ([segue.identifier isEqualToString:@"logInSegue"]) {
-//        LogInViewController *logIn;
-//        logIn = (LogInViewController *)segue.sourceViewController;
-//    }
- }
+
 
 
 @end

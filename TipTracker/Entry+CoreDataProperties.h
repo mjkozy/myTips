@@ -2,7 +2,7 @@
 //  Entry+CoreDataProperties.h
 //  myTips
 //
-//  Created by Michael Kozy on 8/9/17.
+//  Created by Michael Kozy on 8/10/17.
 //  Copyright © 2017 Michael Kozy. All rights reserved.
 //
 
@@ -24,7 +24,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSString *taxes;
 @property (nullable, nonatomic, copy) NSString *totalSales;
 @property (nullable, nonatomic, copy) NSString *totalTips;
-@property (nullable, nonatomic, retain) Employer *employer;
+@property (nullable, nonatomic, retain) NSSet<Employer *> *employer;
+
+@end
+
+@interface Entry (CoreDataGeneratedAccessors)
+
+- (void)addEmployerObject:(Employer *)value;
+- (void)removeEmployerObject:(Employer *)value;
+- (void)addEmployer:(NSSet<Employer *> *)values;
+- (void)removeEmployer:(NSSet<Employer *> *)values;
 
 @end
 

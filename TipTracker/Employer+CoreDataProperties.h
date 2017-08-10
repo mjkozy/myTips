@@ -2,7 +2,7 @@
 //  Employer+CoreDataProperties.h
 //  myTips
 //
-//  Created by Michael Kozy on 8/9/17.
+//  Created by Michael Kozy on 8/10/17.
 //  Copyright © 2017 Michael Kozy. All rights reserved.
 //
 
@@ -16,22 +16,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSFetchRequest<Employer *> *)fetchRequest;
 
 @property (nullable, nonatomic, copy) NSString *employerName;
-@property (nullable, nonatomic, retain) NSOrderedSet<Entry *> *entries;
+@property (nullable, nonatomic, retain) NSSet<Entry *> *entries;
 
 @end
 
 @interface Employer (CoreDataGeneratedAccessors)
 
-- (void)insertObject:(Entry *)value inEntriesAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromEntriesAtIndex:(NSUInteger)idx;
-- (void)insertEntries:(NSArray<Entry *> *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeEntriesAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInEntriesAtIndex:(NSUInteger)idx withObject:(Entry *)value;
-- (void)replaceEntriesAtIndexes:(NSIndexSet *)indexes withEntries:(NSArray<Entry *> *)values;
 - (void)addEntriesObject:(Entry *)value;
 - (void)removeEntriesObject:(Entry *)value;
-- (void)addEntries:(NSOrderedSet<Entry *> *)values;
-- (void)removeEntries:(NSOrderedSet<Entry *> *)values;
+- (void)addEntries:(NSSet<Entry *> *)values;
+- (void)removeEntries:(NSSet<Entry *> *)values;
 
 @end
 
