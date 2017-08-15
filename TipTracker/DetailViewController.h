@@ -25,6 +25,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *savingsLabel;
 @property (weak, nonatomic) IBOutlet UILabel *notesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *currentEmployerLabel;
+@property (strong, nonatomic) NSManagedObjectContext *moc;
+@property (strong, nonatomic) NSString *currentEmployerName;
 
 
 

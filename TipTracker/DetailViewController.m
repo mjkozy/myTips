@@ -21,8 +21,14 @@
 
     [self setNeedsStatusBarAppearanceUpdate];
     
+    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    self.moc = delegate.managedObjectContext;
+    
+//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:self.moc];
+//    NSManagedObject *emp = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
+//    
     self.dateLabel.text = [self.getRecord valueForKey:@"createdAt"];
-    self.currentEmployerLabel.text = [self.getRecord valueForKey:@"employer"];
+    self.currentEmployerLabel.text = self.currentEmployerName;
     self.spendingCashLabel.text = [NSString stringWithFormat:@"Spending Cash: %@",[self.getRecord valueForKey:@"spendingCash"]];
     self.salesLabel.text = [NSString stringWithFormat:@"Total Sales: %@",[self.getRecord valueForKey:@"totalSales"]];
     self.tipsLabel.text = [NSString stringWithFormat:@"Total Tips: %@",[self.getRecord valueForKey:@"totalTips"]];

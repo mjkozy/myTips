@@ -8,23 +8,33 @@
 
 #import "EmployerViewController.h"
 
+
 @interface EmployerViewController ()
 
-@property (strong, nonatomic) NSArray *myEmployer;
-@property (strong, nonatomic) UIRefreshControl *refreshControl;
-@property (weak, nonatomic) IBOutlet UITableView *employerTableView;
+//@property (strong, nonatomic) NSArray *myEmployer;
+
+@property NSString *empName;
 
 
 @end
 
 @implementation EmployerViewController
-@dynamic refreshControl;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    self.moc = delegate.managedObjectContext;
+        [[CKContainer defaultContainer] accountStatusWithCompletionHandler:^(CKAccountStatus accountStatus, NSError * _Nullable error) {
+            if (accountStatus == CKAccountStatusNoAccount) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Sign into iCloud" message:@"Sign into iCloud to add customer data. On the home screen, launch settings, tap iCloud, and enter our Apple ID. Turn on iCloud Drive. If you do not have an iCloud account, tap Create a new Apple ID." preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                }]];
+                [self presentViewController:alert animated:YES completion:nil];
+            }
+        }];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    self.moc = appDelegate.managedObjectContext;
 
     //Perform fetch
     NSError *error = nil;
@@ -37,12 +47,14 @@
     
     [self.navigationController.navigationBar setHidden:NO];
     
+    if (self.fetchedResultsController != nil) {
+        [self.addEmployer setEnabled:NO];
+    }
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.fetchedResultsController performFetch:nil];
- 
 }
 
 - (IBAction)addEmployer:(id)sender {
@@ -55,12 +67,12 @@
         UITextField *empName = [[addEmployer textFields]firstObject];
         
         NSString *emp = empName.text;
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:self.moc];
-        NSManagedObject *employer = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
+        NSManagedObjectContext *context = self.moc;
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:context];
+        Employer *employer = [[Employer alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
+//        NSManagedObject *employer = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
         [employer setValue:emp forKey:@"employerName"];
         [self.moc save:nil];
-        [self.addEmployer setEnabled:NO];
-        [self.employerTableView reloadData];
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
     [addEmployer addAction:okay];
@@ -94,6 +106,7 @@
 #pragma mark TableView DataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    
     return [[self.fetchedResultsController sections] count];
 }
 
@@ -121,11 +134,14 @@
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Entry"];
+        NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+        NSError *error = nil;
+        [self.moc executeRequest:delete error:&error];
         NSManagedObject *deleteObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [self.moc deleteObject:deleteObject];
         [self.moc save:nil];
     }
-//    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     [self.addEmployer setEnabled:YES];
     [self.employerTableView reloadData];
 }
@@ -134,16 +150,18 @@
 
 
 - (NSFetchedResultsController *)fetchedResultsController {
+    
+    NSManagedObjectContext *context = self.moc;
+    
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
         //Initialize Fetch Request
         NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Employer"];
         //Sort Descriptors
-        [fetch setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"employerName" ascending:YES]]];
+        [fetch setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"employerName" ascending:NO]]];
         //Initialize fetched results controller
-        self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetch managedObjectContext:self.moc sectionNameKeyPath:nil cacheName:nil];
-    [fetch setFetchBatchSize:1];
+        self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetch managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
     NSFetchedResultsController *fetchedResultsController1 = [[NSFetchedResultsController alloc] initWithFetchRequest:fetch managedObjectContext:self.moc sectionNameKeyPath:nil cacheName:nil];
     self.fetchedResultsController = fetchedResultsController1;
     _fetchedResultsController.delegate = self;
@@ -192,7 +210,7 @@
         NSIndexPath *indexPath = [self.employerTableView indexPathForSelectedRow];
         Employer *passedRecord = [self.fetchedResultsController objectAtIndexPath:indexPath];
         tipsVC.recievedRecord = passedRecord;
-       
+        tipsVC.empName = [passedRecord valueForKey:@"employerName"];
     }
 }
 

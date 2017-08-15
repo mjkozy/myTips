@@ -24,16 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSString *taxes;
 @property (nullable, nonatomic, copy) NSString *totalSales;
 @property (nullable, nonatomic, copy) NSString *totalTips;
-@property (nullable, nonatomic, retain) NSSet<Employer *> *employer;
-
-@end
-
-@interface Entry (CoreDataGeneratedAccessors)
-
-- (void)addEmployerObject:(Employer *)value;
-- (void)removeEmployerObject:(Employer *)value;
-- (void)addEmployer:(NSSet<Employer *> *)values;
-- (void)removeEmployer:(NSSet<Employer *> *)values;
+@property (nullable, nonatomic, retain) Employer *currentEmployer;
 
 @end
 

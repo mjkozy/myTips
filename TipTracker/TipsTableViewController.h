@@ -8,7 +8,7 @@
 
 
 #import <UIKit/UIKit.h>
-#import "EmployerTableView.h"
+#import "EmployerViewController.h"
 #import "DescriptionCell.h"
 #import "DetailViewController.h"
 #import "Entry+CoreDataClass.h"

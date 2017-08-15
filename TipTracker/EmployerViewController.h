@@ -11,12 +11,14 @@
 #import <CoreData/CoreData.h>
 #import "Employer+CoreDataClass.h"
 #import "TipsTableViewController.h"
+#import <CloudKit/CloudKit.h>
 
 
 @interface EmployerViewController : UIViewController <UITableViewDataSource,UITabBarDelegate, NSFetchedResultsControllerDelegate>
 @property (strong, nonatomic) NSManagedObjectContext *moc;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *addEmployer;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (weak, nonatomic) IBOutlet UITableView *employerTableView;
 
 
 @end

@@ -62,7 +62,6 @@
 		A3EE34CD1CD1B68500974604 /* appIcon167@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EE34BF1CD1B68500974604 /* appIcon167@2x.png */; };
 		A3EE34CE1CD1B68500974604 /* appIcon180.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EE34C01CD1B68500974604 /* appIcon180.png */; };
 		A3EE34D11CD3DBD500974604 /* detail.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EE34D01CD3DBD500974604 /* detail.png */; };
-		A3FBA0471CCADFE9002DAA40 /* EmployerTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FBA0461CCADFE9002DAA40 /* EmployerTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -156,8 +155,6 @@
 		A3EE34BF1CD1B68500974604 /* appIcon167@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "appIcon167@2x.png"; sourceTree = "<group>"; };
 		A3EE34C01CD1B68500974604 /* appIcon180.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appIcon180.png; sourceTree = "<group>"; };
 		A3EE34D01CD3DBD500974604 /* detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = detail.png; sourceTree = "<group>"; };
-		A3FBA0451CCADFE9002DAA40 /* EmployerTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmployerTableView.h; sourceTree = "<group>"; };
-		A3FBA0461CCADFE9002DAA40 /* EmployerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmployerTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,8 +200,6 @@
 		A3121D0E1C627D2200A1BBB5 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				A3FBA0451CCADFE9002DAA40 /* EmployerTableView.h */,
-				A3FBA0461CCADFE9002DAA40 /* EmployerTableView.m */,
 				A3D6BCF61F3CAA500090AB5C /* EmployerViewController.h */,
 				A3D6BCF71F3CAA500090AB5C /* EmployerViewController.m */,
 				A3BD8AE71C87240D000A8430 /* TipsTableViewController.h */,
@@ -625,7 +620,6 @@
 				A39004931F3BB30F00379F5F /* Entry+CoreDataProperties.m in Sources */,
 				A3A47C7D1D131415005FA5A2 /* DescriptionCell.m in Sources */,
 				A3BD8AE91C87240D000A8430 /* TipsTableViewController.m in Sources */,
-				A3FBA0471CCADFE9002DAA40 /* EmployerTableView.m in Sources */,
 				A3A4E7AC1C5F15CC00828F20 /* AppDelegate.m in Sources */,
 				A33015B11CA5CE520090327F /* NavigationViewController.m in Sources */,
 				A382A3271E3F97CE00F584DF /* TipTracker.xcdatamodeld in Sources */,

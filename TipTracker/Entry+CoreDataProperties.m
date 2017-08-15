@@ -23,6 +23,6 @@
 @dynamic taxes;
 @dynamic totalSales;
 @dynamic totalTips;
-@dynamic employer;
+@dynamic currentEmployer;
 
 @end

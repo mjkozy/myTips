@@ -207,7 +207,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addEmployer" destination="dLg-fu-BLX" id="Kow-V3-R6a"/>
-                        <outlet property="employerTableView" destination="eVN-dG-BcU" id="chW-Dv-zwl"/>
+                        <outlet property="employerTableView" destination="eVN-dG-BcU" id="ZCK-vD-JIt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vl1-28-S3j" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -384,7 +384,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rzo-4a-q0N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-473" y="-51"/>
+            <point key="canvasLocation" x="-388" y="-49"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="vwo-nJ-CRM">

@@ -42,34 +42,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.fetchedResultsController performFetch:nil];
 }
-//
-//- (void)setCurrentEntry:(NSMutableArray *)entryData{
-//    _entryData = entryData;
-//    [self.tipsTableView reloadData];
-//}
-
-//- (void)loadData {
-//    
-//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Entry" ];
-//    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
-//    fetchRequest.sortDescriptors = @[sortDescriptor];
-//    self.entryData = [self.moc executeFetchRequest:fetchRequest error:nil];
-//    
-//    if ([self.refreshControl isRefreshing]) {
-//        [self.refreshControl endRefreshing];
-//    }
-//    [self.tipsTableView reloadData];
-//}
-//
-//- (void)getEmployerName {
-//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Employer"];
-//    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"employerName" ascending:YES];
-//    fetchRequest.sortDescriptors = @[sortDescriptor];
-//    self.entryData = [self.moc executeFetchRequest:fetchRequest error:nil];
-//    
-//}
 
 - (IBAction)didTapAddEntryButton:(id)sender {
     
@@ -124,14 +97,14 @@
         [self.moc deleteObject:deleteObject];
         [self.moc save:nil];
     }
-//    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView reloadData];
+    [self.tipsTableView reloadData];
 }
 
 #pragma mark Fetched Results Controller Delegate Methods
 
 
 - (NSFetchedResultsController *)fetchedResultsController {
+    NSManagedObjectContext *context = self.moc;
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
@@ -140,8 +113,8 @@
     //Sort Descriptors
     [fetch setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES]]];
     //Initialize fetched results controller
-    self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetch managedObjectContext:self.moc sectionNameKeyPath:nil cacheName:nil];
-    [fetch setFetchBatchSize:1];
+    self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetch managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
+    [fetch setFetchBatchSize:14];
     NSFetchedResultsController *fetchedResultsController1 = [[NSFetchedResultsController alloc] initWithFetchRequest:fetch managedObjectContext:self.moc sectionNameKeyPath:nil cacheName:nil];
     self.fetchedResultsController = fetchedResultsController1;
     _fetchedResultsController.delegate = self;
@@ -184,17 +157,6 @@
 
 
 #pragma mark helper methods
-
-//- (void)fetchEntryData {
-//
-//    NSManagedObjectContext *context = self.moc;
-//    NSFetchRequest *request = [NSFetchRequest new];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:context];
-//    [request setEntity:entity];
-//    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES]];
-//    self.entryData = [self.moc executeFetchRequest:request error:nil];
-//    [self.tipsTableView reloadData];
-//}
 
 - (void)addInfo {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Add Tips" message:nil preferredStyle:UIAlertControllerStyleAlert];
@@ -268,10 +230,14 @@
 
         // Create New Record
         NSManagedObjectContext *context = self.moc;
-        NSEntityDescription *enteredInfo = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:context];
-        NSManagedObject *newEntry = [[NSManagedObject alloc] initWithEntity:enteredInfo insertIntoManagedObjectContext:context];
+//        NSEntityDescription *enteredInfo = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:context];
+//        NSManagedObject *newEntry = [[NSManagedObject alloc] initWithEntity:enteredInfo insertIntoManagedObjectContext:context];
         
-        Entry *employerEntry = [NSEntityDescription insertNewObjectForEntityForName:@"Entry" inManagedObjectContext:context];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:context];
+        Employer *employerEntry = [[Employer alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
+        
+        NSEntityDescription *entryEntity = [NSEntityDescription entityForName:@"Entry" inManagedObjectContext:context];
+        Entry *newEntry = [[Entry alloc] initWithEntity:entryEntity insertIntoManagedObjectContext:context];
     
         //set values of new record
         [newEntry setValue:newSalesString forKey:@"totalSales"];
@@ -283,12 +249,12 @@
         [newEntry setValue:taxesString forKey:@"taxes"];
         [newEntry setValue:savingsString forKey:@"savings"];
         [newEntry setValue:spendingCashString forKey:@"spendingCash"];
-        [employerEntry addEmployerObject:self.recievedRecord];
+        [employerEntry addEntriesObject:newEntry];
         
         //Save Managed Object Context
         [context save:nil];
     
-        NSLog(@"%@", [newEntry valueForKey:@"employer"]);
+
         [self dismissViewControllerAnimated:YES completion:nil];
     }];
     [alertController addAction:addAction];
@@ -306,8 +272,9 @@
     if ([segue.identifier isEqualToString:@"detailSegue"]) {
         DetailViewController *detailsVC = segue.destinationViewController;
         NSIndexPath *indexPath = [self.tipsTableView indexPathForSelectedRow];
-        Entry *sendRecord = [self.entryData objectAtIndex:indexPath.row];
+        Entry *sendRecord = [self.fetchedResultsController objectAtIndexPath:indexPath];
         detailsVC.getRecord = sendRecord;
+        detailsVC.currentEmployerName = self.empName;
     
     }
 }

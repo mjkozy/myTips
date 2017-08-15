@@ -2,7 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G29" minimumToolsVersion="Xcode 7.0" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
     <entity name="Employer" representedClassName="Employer" syncable="YES">
         <attribute name="employerName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="entries" toMany="YES" deletionRule="Cascade" destinationEntity="Entry" inverseName="employer" inverseEntity="Entry" syncable="YES"/>
+        <relationship name="entries" toMany="YES" deletionRule="Cascade" destinationEntity="Entry" inverseName="currentEmployer" inverseEntity="Entry" syncable="YES"/>
     </entity>
     <entity name="Entry" representedClassName="Entry" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="String" syncable="YES"/>
@@ -14,12 +14,12 @@
         <attribute name="taxes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalSales" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="totalTips" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="employer" toMany="YES" deletionRule="Nullify" destinationEntity="Employer" inverseName="entries" inverseEntity="Employer" syncable="YES"/>
+        <relationship name="currentEmployer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Employer" inverseName="entries" inverseEntity="Employer" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES"/>
     <elements>
-        <element name="Employer" positionX="-263" positionY="11" width="128" height="73"/>
-        <element name="Entry" positionX="-27" positionY="-207" width="128" height="193"/>
+        <element name="Employer" positionX="-263" positionY="-360" width="128" height="73"/>
+        <element name="Entry" positionX="34" positionY="-297" width="128" height="193"/>
         <element name="User" positionX="-459" positionY="-144" width="128" height="45"/>
     </elements>
 </model>
