@@ -11,9 +11,7 @@
 
 @interface EmployerViewController ()
 
-//@property (strong, nonatomic) NSArray *myEmployer;
-
-@property NSString *empName;
+@property (strong, nonatomic) NSString *empName;
 
 
 @end
@@ -23,38 +21,49 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-        [[CKContainer defaultContainer] accountStatusWithCompletionHandler:^(CKAccountStatus accountStatus, NSError * _Nullable error) {
-            if (accountStatus == CKAccountStatusNoAccount) {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Sign into iCloud" message:@"Sign into iCloud to add customer data. On the home screen, launch settings, tap iCloud, and enter our Apple ID. Turn on iCloud Drive. If you do not have an iCloud account, tap Create a new Apple ID." preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                }]];
-                [self presentViewController:alert animated:YES completion:nil];
-            }
-        }];
-    
+    [[CKContainer defaultContainer] accountStatusWithCompletionHandler:^(CKAccountStatus accountStatus, NSError * _Nullable error) {
+        if (accountStatus == CKAccountStatusNoAccount) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Log In Error" message:@"Please Sign into iCloud to add customer data. On the home screen, launch settings, tap iCloud, and enter our Apple ID. Turn on iCloud Drive. If you do not have an iCloud account, tap Create a new Apple ID." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okay = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            [alert addAction:okay];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.moc = appDelegate.managedObjectContext;
-
-    //Perform fetch
-    NSError *error = nil;
-    [self.fetchedResultsController performFetch:&error];
     
+    NSError *error = nil;
+    //Perform fetch
+    [self.fetchedResultsController performFetch:&error];
+
+
     UIImage *image = [UIImage imageNamed:@"viewImage.png"];
     UIImageView *backgroundImage = [[UIImageView alloc] initWithImage:image];
     self.employerTableView.backgroundView = backgroundImage;
     self.navigationItem.title = @"MyTips";
     
-    [self.navigationController.navigationBar setHidden:NO];
     
-    if (self.fetchedResultsController != nil) {
-        [self.addEmployer setEnabled:NO];
-    }
+    [self.navigationController.navigationBar setHidden:NO];
     
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [[CKContainer defaultContainer] accountStatusWithCompletionHandler:^(CKAccountStatus accountStatus, NSError * _Nullable error) {
+        if (accountStatus == CKAccountStatusNoAccount) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Log In Error" message:@"Please Sign into iCloud to add customer data. On the home screen, launch settings, tap iCloud, and enter our Apple ID. Turn on iCloud Drive. If you do not have an iCloud account, tap Create a new Apple ID." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okay = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                [self dismissViewControllerAnimated:YES completion:nil];
+            }];
+            [alert addAction:okay];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }];
 }
 
 - (IBAction)addEmployer:(id)sender {
@@ -65,12 +74,11 @@
     }];
     UIAlertAction *okay = [UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         UITextField *empName = [[addEmployer textFields]firstObject];
-        
         NSString *emp = empName.text;
         NSManagedObjectContext *context = self.moc;
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employer" inManagedObjectContext:context];
         Employer *employer = [[Employer alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
-//        NSManagedObject *employer = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.moc];
+
         [employer setValue:emp forKey:@"employerName"];
         [self.moc save:nil];
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -133,16 +141,24 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
-        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Entry"];
-        NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
-        NSError *error = nil;
-        [self.moc executeRequest:delete error:&error];
-        NSManagedObject *deleteObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        [self.moc deleteObject:deleteObject];
-        [self.moc save:nil];
+        //Alert user that all data will be deleted prior to deletion
+        UIAlertController *confirmDelete = [UIAlertController alertControllerWithTitle:@"Warning" message:@"Deleting employer will delete all associated data, are you sure?" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *imSure = [UIAlertAction actionWithTitle:@"I'm Sure" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Entry"];
+            NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+            NSError *error = nil;
+            [self.moc executeRequest:delete error:&error];
+            NSManagedObject *deleteObject = [self.fetchedResultsController objectAtIndexPath:indexPath];
+            [self.moc deleteObject:deleteObject];
+            [self.moc save:nil];
+            [self.addEmployer setEnabled:YES];
+        }];
+        UIAlertAction *imNotSure = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+        [confirmDelete addAction:imSure];
+        [confirmDelete addAction:imNotSure];
+        [self presentViewController:confirmDelete animated:YES completion:nil];
     }
-    [self.addEmployer setEnabled:YES];
+   
     [self.employerTableView reloadData];
 }
 
